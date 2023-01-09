@@ -1,0 +1,48 @@
+body{
+    background-size:cover;
+    background-image: url('bg.jpg');
+    
+
+}
+.container{
+    position: relative;
+    border:solid black;
+    padding:50px;
+    background-color: white ;
+    margin: 100px;
+    height:75vh;
+    width: 100%;
+    align-items: flex-start;
+}
+.form-body{
+    text-align: left;
+}
+label
+{   text-align: left;
+    font-size: larger;
+    margin: 6px;
+    display: block;
+}
+input{
+    display:inline;
+    margin-bottom: auto;
+    height: 40px;
+    width: 300px;
+   
+    border-radius: 10px;
+}
+sup
+{
+    color: red;
+}
+label.error {
+    color: red;
+    font-size: inherit;
+    display:inline-block
+}
+
+#btn{
+    font-size: xx-large;
+    margin-top: 20px;
+    height: auto;
+}
