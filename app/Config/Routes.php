@@ -19,13 +19,13 @@ if (is_file(SYSTEMPATH . 'Config/Routes.php')) {
 $routes->setDefaultNamespace('App\Controllers');
 $routes->setDefaultController('Home');
 $routes->setDefaultMethod('index');
-$routes->setTranslateURIDashes(false);
+$routes->setTranslateURIDashes(true);
 $routes->set404Override();
 // The Auto Routing (Legacy) is very dangerous. It is easy to create vulnerable apps
 // where controller filters or CSRF protection are bypassed.
 // If you don't want to define all routes, please use the Auto Routing (Improved).
 // Set `$autoRoutesImproved` to true in `app/Config/Feature.php` and set the following to true.
-// $routes->setAutoRoute(false);
+$routes->setAutoRoute(true);
 
 /*
  * --------------------------------------------------------------------
@@ -44,13 +44,8 @@ $routes->get('admindashboard/update','Admin::update');
 $routes->get('admindashboard/update1','Admin::update_post');
 $routes->get('admindashboard/delete','Admin::deleterow');
 // $routes->match(['get', 'post'], 'news/create', 'News::create');
-
-// #Codeigniter Documentation links
-// $routes->get('/', 'Home::index');
-// $routes->get('news', 'News::index');
-// $routes->get('news/(:segment)', 'News::view/$1');
-// $routes->get('pages', 'Pages::index');
-// $routes->get('(:segment)', 'Pages::view/$1');
+// API Routing start here
+// $routes->match(['post','get'],'apisignup','Api::signup');
 
 /*
  * --------------------------------------------------------------------

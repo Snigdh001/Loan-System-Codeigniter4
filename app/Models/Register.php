@@ -12,6 +12,8 @@ class Register extends Model{
     public function __construct()
     {
         parent::__construct();
+        $this->db = \Config\Database::connect();
+
     }
 
     public function fetch_datarow($email)
@@ -19,7 +21,7 @@ class Register extends Model{
         $this->db = \Config\Database::connect();
         $data= $this->db->table('registeruser')->select('email,id,password,role')->where('email',$email)->get()->getResultArray();
         return $data[0];
-    }   
+    }        
     public function FetchAllRegisterUser($search,$asc,$desc)
     {   $this->db = \Config\Database::connect();
         $data="";
