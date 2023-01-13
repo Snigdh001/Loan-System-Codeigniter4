@@ -7,12 +7,11 @@ class Register extends Model{
     protected $table = 'registeruser';
     protected $allowedFields=['fname','lname','email','mobile','password'];
 
+    protected $returnType = 'array';
+
     public function __construct()
     {
-        // $db = db_connect();
-        // $this->db = \Config\Database::connect();
-        // $this->pager = \Config\Services::pager();
-        
+        parent::__construct();
     }
 
     public function fetch_datarow($email)
@@ -36,7 +35,6 @@ class Register extends Model{
             $data= $this->db->table('registeruser')->select()->where('role','user')->orderBy('fname','desc')->get()->getResultArray();
         }
         return $data;
-        // print_r($data); 
     }
     public function UpdateDetails($data)
     {
@@ -91,5 +89,49 @@ class Register extends Model{
         $data= $db->table('registeruser')->select()->where('role','user');
         return $data;
     }
+
+    public function SearchPaginate($blog_page,$search)
+    {
+        $this->db = \Config\Database::connect();
+        return $this
+        ->table('registeruser')
+        ->select('*')
+        ->where('role','user')
+        ->like('fname',$search)
+        ->paginate($blog_page);
+    }
+    public function DescPaginate($blog_page,$desc)
+    {
+        $this->db = \Config\Database::connect();
+        return $this
+        ->table('registeruser')
+        ->select('*')
+        ->where('role','user')
+        ->orderBy('fname','desc')
+        ->paginate($blog_page);
+    }
+    public function AscPaginate($blog_page,$asc)
+    {
+        $this->db = \Config\Database::connect();
+        return $this
+        ->table('registeruser')
+        ->select('*')
+        ->where('role','user')
+        ->orderBy('fname','asc')
+        ->paginate($blog_page);
+    }
+
+    public function onlyPaginate($blog_page)
+    {
+        $this->db = \Config\Database::connect();
+        return $this
+        ->table('registeruser')
+        ->select('*')
+        ->where('role','user')
+        ->orderBy('id')
+        ->paginate($blog_page);
+    }
+    
+    
     
 }

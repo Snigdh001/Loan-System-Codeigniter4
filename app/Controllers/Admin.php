@@ -15,28 +15,43 @@ class Admin extends BaseController
     }
 
     public function admindashboard(){
-
-            // $data = [
-            //         'users' => $mo->paginate(5), 
-            //         'pager' => $mo->pager,  
-            //     ]
             $db = \Config\Database::connect();
             $AdminModel=model(Register::class);
-                // $data = [
-                //             'users' => $AdminModel->paginate(5), 
-                //             'pager' => $this->AdminModel->pager,  
-                // ];
-            
-            
-            // print_r($_POST);
-
             $session=\Config\Services::session();
+            // var_dump($_POST['search']);
             if(isset($session) && $session->get('role')=='admin')
             {   
-                $data['row']=$AdminModel->FetchAllRegisterUser($_POST['search'],$_POST['asc'],$_POST['desc']);
-                return view('emi/admindashboard',$data);
-        
-        }
+
+                if($_GET['asc']!='')
+                {
+                    $data = [
+                        'row' => $AdminModel->AscPaginate(5,$_GET['asc']), 
+                        'pager' => $AdminModel->pager, ];
+                        return view('emi/admindashboard',$data);
+                }
+                if($_GET['desc']!=''){
+                    $data = [
+                        'row' => $AdminModel->DescPaginate(5,$_GET['desc']), 
+                        'pager' => $AdminModel->pager, ];
+                        return view('emi/admindashboard',$data);
+                }
+                if($_GET['search']!=''){
+
+                    $data = [
+                        'row' => $AdminModel->SearchPaginate(5,$_GET['search']), 
+                        'pager' => $AdminModel->pager, ];
+                        return view('emi/admindashboard',$data);
+                }
+                if($_GET==NULL || $_POST['search']=='')
+                {
+                    $data = [
+                        'row' => $AdminModel->onlyPaginate(5), 
+                        'pager' => $AdminModel->pager, ];
+                        return view('emi/admindashboard',$data);
+                    }
+
+                    // $data['row']=$AdminModel->FetchAllRegisterUser($_GET['search'],$_GET['asc'],$_GET['desc']);
+            }
         else{return redirect()->to('/login');}
     }
     
