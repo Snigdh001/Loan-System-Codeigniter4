@@ -1,35 +1,47 @@
 <?php
-
 namespace App\Models;
-use CodeIgniter\Model;
 
+use CodeIgniter\Model;
 class Register extends Model{
-    
-    protected $table='registeruser';
+
+    protected $table = 'registeruser';
     protected $allowedFields=['fname','lname','email','mobile','password'];
 
     public function __construct()
     {
-        $this->db = \Config\Database::connect();
+        // $db = db_connect();
+        // $this->db = \Config\Database::connect();
+        // $this->pager = \Config\Services::pager();
+        
     }
 
     public function fetch_datarow($email)
     {   
-        $db = db_connect();
         $this->db = \Config\Database::connect();
-        $data= $this->select('email,id,password,role')->where('email',$email)->getResultArray();
-        return $data;
+        $data= $this->db->table('registeruser')->select('email,id,password,role')->where('email',$email)->get()->getResultArray();
+        return $data[0];
     }   
-    public function FetchAllRegisterUser()
-    {
-        $data= $this->select()->where('role','user')->get()->getResultArray();
-        // print_r($data);
+    public function FetchAllRegisterUser($search,$asc,$desc)
+    {   $this->db = \Config\Database::connect();
+        $data="";
+        if($search==NULL)
+        $data= $this->db->table('registeruser')->select()->where('role','user')->get()->getResultArray();
+        if($search){
+            $data= $this->db->table('registeruser')->select()->where('role','user')->like('fname',$search)->get()->getResultArray();
+        }
+        if($asc){
+            $data= $this->db->table('registeruser')->select()->where('role','user')->orderBy('fname','asc')->get()->getResultArray();
+        }
+        if($desc){
+            $data= $this->db->table('registeruser')->select()->where('role','user')->orderBy('fname','desc')->get()->getResultArray();
+        }
         return $data;
+        // print_r($data); 
     }
     public function UpdateDetails($data)
     {
                     $db = db_connect();
-    // {   $id=$this->request->getPost('id');
+        // {   $id=$this->request->getPost('id');
                      if($data['mobile']!=NULL)
                     {
                         $data1=['mobile'=>$data['mobile']];
@@ -71,5 +83,13 @@ class Register extends Model{
 
 
     }
-
+    // public function shubham(){
+    //     return "gunnnn";
+    // }
+    public function dataobj()
+    {   $db = db_connect();
+        $data= $db->table('registeruser')->select()->where('role','user');
+        return $data;
+    }
+    
 }

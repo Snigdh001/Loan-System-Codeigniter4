@@ -1,35 +1,50 @@
 <?php
 
 namespace App\Controllers;
+use App\Models\Register;
+
+
 
 class Admin extends BaseController
 {   
     protected $table='registeruser';
     public function __construct()
     {   
-        $this->db = \Config\Database::connect();       
-        $AdminModel = model(Register::class);
+        $this->db = \Config\Database::connect();
+        // $AdminModel = model(Register::class);
     }
 
     public function admindashboard(){
-        $AdminModel=model(Register::class);
-        
-        // $data['row']=$AdminModel->FetchAllRegisterUser();
-        // return view('emi/admindashboard',$data);
 
-        $session=\Config\Services::session();
-        if(isset($session) && $session->get('role')=='admin')
-        {   $data['row']=$AdminModel->FetchAllRegisterUser();
-            return view('emi/admindashboard',$data);
-        }
-        else{return redirect()->to('/login');
-        }
+            // $data = [
+            //         'users' => $mo->paginate(5), 
+            //         'pager' => $mo->pager,  
+            //     ]
+            $db = \Config\Database::connect();
+            $AdminModel=model(Register::class);
+                // $data = [
+                //             'users' => $AdminModel->paginate(5), 
+                //             'pager' => $this->AdminModel->pager,  
+                // ];
+            
+            
+            // print_r($_POST);
+
+            $session=\Config\Services::session();
+            if(isset($session) && $session->get('role')=='admin')
+            {   
+                $data['row']=$AdminModel->FetchAllRegisterUser($_POST['search'],$_POST['asc'],$_POST['desc']);
+                return view('emi/admindashboard',$data);
         
+        }
+        else{return redirect()->to('/login');}
     }
     
     public function update()
-    {
-        
+    {  
+        // $val=$this->Resister->shubham();
+        // print_r($val);
+        // die("code die");
         return view('emi/update');
 
         // return redirect()->to('admindashboard/update');
@@ -45,13 +60,15 @@ class Admin extends BaseController
       
     }
     public function deleterow()
-    {
+    {  
         $id=$_GET['id'];
         $AdminModel = model(Register::class);
         $AdminModel->deletedata($id);
+
         // return redirect()->to('admindashboard');
-        
+        return true;
     }
+    
 
 
 }

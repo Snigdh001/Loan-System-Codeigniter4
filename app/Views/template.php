@@ -81,19 +81,22 @@
 
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-3 static-top ">
           <!-- Sidebar Toggle (Topbar) -->
-          <button id="sidebarToggleTop" class="btn btn-link  rounded-circle mr-3" onclick="toggle()">
+          <button id="sidebarToggleTop" class="btn btn-link  rounded-circle mr-3" onclick="toggle()" >
+            
             <i class='bx bx-menu'></i>
           </button>
 
           <!-- Topbar Search -->
-          <form class="form-inline me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+          <form class="form-inline me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search" method="post">
+          <?= csrf_field() ?>
             <div class="input-group search-group ">
               <div class="search-icon">
                 <i class='bx bx-search'></i>
               </div>
-              <input type="text" class="form-control border-0 small" placeholder="Search for" />
+              <input type="text" class="form-control border-0 small" placeholder="Search for" name="search"  />
               <button class="btn search-btn">Search</button>
-
+              <button class="btn search-btn" name="asc" value="asc">Acending</button>
+              <button class="btn search-btn" name="desc" value="desc">Desending</button>
             </div>
           </form>
 
