@@ -26,6 +26,10 @@
         </thead>
         <?php
         $count=0;
+        if( isset($_GET['page']))
+        {
+            $count=($_GET['page']-1)*5;
+        }
         foreach($row as $rows )
         {
             $count+=1

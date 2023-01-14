@@ -1,37 +1,47 @@
 <?php
-
 namespace App\Models;
-use CodeIgniter\Model;
 
+use CodeIgniter\Model;
 class Register extends Model{
-    
-    protected $table='registeruser';
+
+    protected $table = 'registeruser';
     protected $allowedFields=['fname','lname','email','mobile','password'];
+
+    protected $returnType = 'array';
 
     public function __construct()
     {
+        parent::__construct();
         $this->db = \Config\Database::connect();
+
     }
 
     public function fetch_datarow($email)
     {   
-        $db = db_connect();
         $this->db = \Config\Database::connect();
-        // $data= $this->table('registeruser')->select('email,id,password,role')->where('email',$email)->getResultArray();
-        $data=$this->table('registeruser')->select('email,id,password,role')->where('email',$email)->get()->getRowArray();
-        
-        return $data;
-    }   
-    public function FetchAllRegisterUser()
-    {
-        $data= $this->select()->where('role','user')->get()->getResultArray();
-        // print_r($data);
+        $data= $this->db->table('registeruser')->select('email,id,password,role')->where('email',$email)->get()->getResultArray();
+        return $data[0];
+    }        
+    public function FetchAllRegisterUser($search,$asc,$desc)
+    {   $this->db = \Config\Database::connect();
+        $data="";
+        if($search==NULL)
+        $data= $this->db->table('registeruser')->select()->where('role','user')->get()->getResultArray();
+        if($search){
+            $data= $this->db->table('registeruser')->select()->where('role','user')->like('fname',$search)->get()->getResultArray();
+        }
+        if($asc){
+            $data= $this->db->table('registeruser')->select()->where('role','user')->orderBy('fname','asc')->get()->getResultArray();
+        }
+        if($desc){
+            $data= $this->db->table('registeruser')->select()->where('role','user')->orderBy('fname','desc')->get()->getResultArray();
+        }
         return $data;
     }
     public function UpdateDetails($data)
     {
                     $db = db_connect();
-    // {   $id=$this->request->getPost('id');
+        // {   $id=$this->request->getPost('id');
                      if($data['mobile']!=NULL)
                     {
                         $data1=['mobile'=>$data['mobile']];
@@ -73,5 +83,57 @@ class Register extends Model{
 
 
     }
+    // public function shubham(){
+    //     return "gunnnn";
+    // }
+    public function dataobj()
+    {   $db = db_connect();
+        $data= $db->table('registeruser')->select()->where('role','user');
+        return $data;
+    }
 
+    public function SearchPaginate($blog_page,$search)
+    {
+        $this->db = \Config\Database::connect();
+        return $this
+        ->table('registeruser')
+        ->select('*')
+        ->where('role','user')
+        ->like('fname',$search)
+        ->paginate($blog_page);
+    }
+    public function DescPaginate($blog_page,$desc)
+    {
+        $this->db = \Config\Database::connect();
+        return $this
+        ->table('registeruser')
+        ->select('*')
+        ->where('role','user')
+        ->orderBy('fname','desc')
+        ->paginate($blog_page);
+    }
+    public function AscPaginate($blog_page,$asc)
+    {
+        $this->db = \Config\Database::connect();
+        return $this
+        ->table('registeruser')
+        ->select('*')
+        ->where('role','user')
+        ->orderBy('fname','asc')
+        ->paginate($blog_page);
+    }
+
+    public function onlyPaginate($blog_page)
+    {
+        $this->db = \Config\Database::connect();
+        return $this
+        ->table('registeruser')
+        ->select('*')
+        ->where('role','user')
+        ->orderBy('id')
+        ->paginate($blog_page);
+    }
+    
+    
+    
 }

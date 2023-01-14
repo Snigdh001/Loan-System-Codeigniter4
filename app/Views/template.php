@@ -81,19 +81,21 @@
 
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-3 static-top ">
           <!-- Sidebar Toggle (Topbar) -->
-          <button id="sidebarToggleTop" class="btn btn-link  rounded-circle mr-3" onclick="toggle()">
+          <button id="sidebarToggleTop" class="btn btn-link  rounded-circle mr-3" onclick="toggle()" >
+            
             <i class='bx bx-menu'></i>
           </button>
 
           <!-- Topbar Search -->
-          <form class="form-inline me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+          <form class="form-inline me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search" method="get">
             <div class="input-group search-group ">
               <div class="search-icon">
                 <i class='bx bx-search'></i>
               </div>
-              <input type="text" class="form-control border-0 small" placeholder="Search for" />
+              <input type="text" class="form-control border-0 small" placeholder="Search for" name="search"  />
               <button class="btn search-btn">Search</button>
-
+              <button class="btn search-btn" name="asc" value="asc" > Acending</button>
+              <button class="btn search-btn" name="desc" value="desc" >Desending</button>
             </div>
           </form>
 
@@ -241,7 +243,7 @@
             <div class="col-md-12">
               
               <!--pagination-->
-              <div class="d-flex align-items-center justify-content-end mb-3">            
+              <!-- <div class="d-flex align-items-center justify-content-end mb-3">            
                 <div class="csv border-end me-3 pe-3 d-flex align-items-center">
                   <a href="" class="d-flex text-decoration-none text-dark "><img src="static/images/excel-file.svg" class="me-2"> Export CSV  </a>
                 </div>
@@ -259,192 +261,13 @@
                   <li class="page-item"><a class="page-link" href="#">5</a></li>
                   <li class="page-item"><a class="page-link" href="#"><img src="static/images/right-arrow-dark.svg" alt=""> </a></li>
                 </ul>
-              </div>
-         
-                <?php
+              </div> -->
+              
+                    <?php
                         // This is the main content partial
                         $this->renderSection('content');
                     ?>
-             <!--close-pagination-->
-<!-- 
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col"></th>
-                    <th scope="col">State</th>
-                    <th scope="col">Region</th>
-                    <th scope="col">District</th>static/
-                    <th scope="col">School</th>
-                    <th scope="col">Pipeline Stage</th>
-                    <th scope="col">County</th>
-                    <th scope="col">School Count</th>
-                    <th scope="col">Student Count</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">Sales Rep</th>
-                    <th scope="col">Last Touch</th>
-                  </tr>
-                </thead>static/
-                <tbody>
-                  <tr>
-                    <th scope="row">
-                      <input class="form-check-input" type="checkbox">
-                    </th>
-                    <td>Tx</td>
-                    <td>12</td>
-                    <td><a href="">Dallas ISD</a></td>
-                    <td><a href="">Curtsinger Elementary</a></td>
-                    <td>Prospect</td>
-                    <td>Collin</td>
-                    <td>345</td>
-                    <td>444567</td>
-                    <td>400-555-5555</td>
-                    <td>John Patric</td>
-                    <td>05/10/2021</td>
-
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <input class="form-check-input" type="checkbox">
-                    </th>
-                    <td>Tx</td>
-                    <td>12</td>
-                    <td><a href="">Dallas ISD</a></td>
-                    <td><a href="">Curtsinger Elementary</a></td>
-                    <td>Prospect</td>
-                    <td>Collin</td>
-                    <td>345</td>
-                    <td>444567</td>
-                    <td>400-555-5555</td>
-                    <td>John Patric</td>
-                    <td>05/10/2021</td>
-static/
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <input class="form-check-input" type="checkbox">
-                    </th>
-                    <td>Tx</td>
-                    <td>12</td>
-                    <td><a href="">Dallas ISD</a></td>
-                    <td><a href="">Curtsinger Elementary</a></td>
-                    <td>Prospect</td>
-                    <td>Collin</td>
-                    <td>345</td>
-                    <td>444567</td>
-                    <td>400-555-5555</td>
-                    <td>John Patric</td>
-                    <td>05/10/2021</td>
-
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <input class="form-check-input" type="checkbox">
-                    </th>
-                    <td>Tx</td>
-                    <td>12</td>
-                    <td><a href="">Dallas ISD</a></td>
-                    <td><a href="">Curtsinger Elementary</a></td>
-                    <td>Prospect</td>
-                    <td>Collin</td>
-                    <td>345</td>
-                    <td>444567</td>
-                    <td>400-555-5555</td>static/
-                    <td>John Patric</td>
-                    <td>05/10/2021</td>
-
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <input class="form-check-input" type="checkbox">
-                    </th>
-                    <td>Tx</td>
-                    <td>12</td>
-                    <td><a href="">Dallas ISD</a></td>
-                    <td><a href="">Curtsinger Elementary</a></td>
-                    <td>Prospect</td>
-                    <td>Collin</td>
-                    <td>345</td>
-                    <td>444567</td>
-                    <td>400-555-5555</td>
-                    <td>John Patric</td>
-                    <td>05/10/2021</td>
-
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <input class="form-check-input" type="checkbox">
-                    </th>
-                    <td>Tx</td>
-                    <td>12</td>static/
-                    <td><a href="">Dallas ISD</a></td>
-                    <td><a href="">Curtsinger Elementary</a></td>
-                    <td>Prospect</td>
-                    <td>Collin</td>
-                    <td>345</td>
-                    <td>444567</td>
-                    <td>400-555-5555</td>
-                    <td>John Patric</td>
-                    <td>05/10/2021</td>
-
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <input class="form-check-input" type="checkbox">
-                    </th>
-                    <td>Tx</td>
-                    <td>12</td>
-                    <td><a href="">Dallas ISD</a></td>
-                    <td><a href="">Curtsinger Elementary</a></td>
-                    <td>Prospect</td>
-                    <td>Collin</td>
-                    <td>345</td>
-                    <td>444567</td>
-                    <td>400-555-5555</td>
-                    <td>John Patric</td>
-                    <td>05/10/2021</td>
-
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <input class="form-check-input" type="checkbox">
-                    </th>
-                    <td>Tx</td>
-                    <td>12</td>
-                    <td><a href="">Dallas ISD</a></td>
-                    <td><a href="">Curtsinger Elementary</a></td>
-                    <td>Prospect</td>
-                    <td>Collin</td>
-                    <td>345</td>
-                    <td>444567</td>
-                    <td>400-555-5555</td>
-                    <td>John Patric</td>
-                    <td>05/10/2021</td>
-
-                  </tr>
-                </tbody>
-              </table> -->
-
-              <!--pagination-->
-              <div class="d-flex align-items-center justify-content-end">            
-                <div class="csv border-end me-3 pe-3 d-flex align-items-center">
-                  <a href="" class="d-flex text-decoration-none text-dark "><img src="static/images/excel-file.svg" class="me-2"> Export CSV  </a>
-                </div>
-               
-                <select name="" id="" class="form-select me-2 page-count ">
-                  <option value="">10</option>
-                </select>
-
-                <ul class="pagination mb-0">
-                  <li class="page-item"><a class="page-link" href="#"> <img src="static/images/left-arrow-light.svg" alt="">  </a></li>
-                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                  <li class="page-item"><a class="page-link" href="#">2</a></li>
-                  <li class="page-item"><a class="page-link" href="#">3</a></li>
-                  <li class="page-item"><a class="page-link" href="#">4</a></li>
-                  <li class="page-item"><a class="page-link" href="#">5</a></li>
-                  <li class="page-item"><a class="page-link" href="#"><img src="static/images/right-arrow-dark.svg" alt=""> </a></li>
-                </ul>
-              </div>
-              <!--close-pagination-->
+              <div class="pages" style="margin 5px;padding:10px;"><?= $pager->links() ?></div>
              </div>
           </div>
           <!--close-table-sec-->

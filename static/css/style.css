@@ -367,3 +367,12 @@ body {
   float: left;
   margin-top: 4px;
 }
+.pages nav a{
+  margin:10px;
+  padding:1vmax;
+  border:1px solid black;
+  background: linear-gradient(#04c2e2, #0091bf);
+  text-decoration: none;
+  color:black;
+
+}
