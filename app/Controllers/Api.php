@@ -24,26 +24,27 @@ class Api extends  Controller
         
         
     }
-    // public function index()
-    // {   
+    public function index()
+    {   
  
-    //     $apimodel= model(Register::class);
+        $apimodel= model(Register::class);
   
-    //     $data= array(
-    //       'name'=>"snigdh"
-    //     );
+        $data= array(
+          'name'=>"snigdh"
+        );
 
-    //     // print_r($data);
-    //     // die;
-    //     // return "shubham dudue";
-    //     return $this->respond($data);
-    // }
-    public function shubhamdudhe()
+        // print_r($data);
+        // die;
+        // return "shubham dudue";
+        return $this->respond($data);
+    }
+    public function signup()
     {  
-        die("code die here to yout bt");
-        $fname = $this->request->getJsonVar('fname',true);
-        die("code die here");
+        // die("code die here to yout bt");
+        // $fname = $this->request->getJsonVar('fname',true);
+        // die("code die here");
         $apimodel=model(Register::class);
+        
         
             $data = [
                 'fname' => $this->request->getVar('fname'),
