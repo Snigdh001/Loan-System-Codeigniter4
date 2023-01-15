@@ -12,18 +12,24 @@
 
 <body>
 <?php ?>
-    <table class="table table-striped">
-        <thead>
+
+<table class="table table-striped">
+    <form action="" id="formid" method="get">
+        <thead >
             <tr>
-                <th scope="col">S.No</th>
-                <th scope="col">ID</th>
-                <th scope="col">Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Mobile No.</th>
-                <th scope="col">Role</th>
+                <th scope="col" >S.no</th>
+                <th scope="col"><button style="border: none;background: white; "type="submit" name="id" value="asc" id="id" onclick="fun(id)" > ID</button></th>
+                <th scope="col"><button style="border: none;background: white; " type="submit"  name="fname" value="asc" id="name" onclick="fun(id)" > Name</button></th>
+                <th scope="col"><button style="border: none;background: white; "type="submit" name="email" value="asc" id="email"  onclick="fun(id)">Email</button></th>
+                <th scope="col"><button style="border: none;background: white; "type="submit" name="mobile" value="asc" id="mobile" onclick="fun(id)"> Mobile</button></th>
+                <!-- <th scope="col"  name="name" value="asc" id="name" onclick="fun('name')" >Name</th>
+                <th scope="col" name="email" value='asc' id="email" onclick="fun('email')">Email</th>
+                <th scope="col" name="mobile" value='asc' id="mobile" onclick="fun('mobile')">Mobile No.</th> -->
+                <th scope="col" >Role</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
+    </form>
         <?php
         $count=0;
         if( isset($_GET['page']))
@@ -70,6 +76,38 @@
             </div>
         </div>
     </div>
+    <script>
+
+        var form = document.getElementById("formid");
+        var count=0;
+        function fun(headid)
+        {   
+            
+            var val= document.getElementById(headid).value;
+            if (val=='asc')
+            {   
+            //     document.getElementById(headid).addEventListener("click", function(event){
+            //     event.preventDefault()
+            // })
+                document.getElementById(headid).value= "desc";
+                form.submit();
+
+                
+            }
+            else if(val=='desc')
+            {   
+            document.getElementById(headid).value= "asc";
+                form.submit();
+            }
+            else
+            {   
+                
+            document.getElementById(headid).value= "asc";
+                form.submit();
+                
+        }
+        }
+    </script>
 </body>
 
 </html>

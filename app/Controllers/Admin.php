@@ -21,17 +21,19 @@ class Admin extends BaseController
             // var_dump($_POST['search']);
             if(isset($session) && $session->get('role')=='admin')
             {   
+                foreach($_GET as $key => $value)
 
-                if(isset($_GET['asc']))
+                if(isset($value)&& $value=="asc")
                 {
                     $data = [
-                        'row' => $AdminModel->AscPaginate(5,$_GET['asc']), 
+                        'row' => $AdminModel->AscPaginate(5,$value,$key), 
                         'pager' => $AdminModel->pager, ];
+                        
                         return view('emi/admindashboard',$data);
                 }
-                if(isset($_GET['desc'])){
+                if(isset($value)&& $value=="desc"){
                     $data = [
-                        'row' => $AdminModel->DescPaginate(5,$_GET['desc']), 
+                        'row' => $AdminModel->DescPaginate(5,$value,$key), 
                         'pager' => $AdminModel->pager, ];
                         return view('emi/admindashboard',$data);
                 }
@@ -39,15 +41,19 @@ class Admin extends BaseController
 
                     $data = [
                         'row' => $AdminModel->SearchPaginate(5,$_GET['search']), 
-                        'pager' => $AdminModel->pager, ];
+                        'pager' => $AdminModel->pager,];
                         return view('emi/admindashboard',$data);
                 }
-                if($_GET==NULL || isset($_GET['search']))
+                if($_GET==NULL ||  isset($_GET['page']) || isset($_GET['search']))
                 {
                     $data = [
                         'row' => $AdminModel->onlyPaginate(5), 
                         'pager' => $AdminModel->pager, ];
                         return view('emi/admindashboard',$data);
+                    }
+                    if($_GET==NULL || isset($_GET['search']))
+                {
+                    
                     }
 
                     // $data['row']=$AdminModel->FetchAllRegisterUser($_GET['search'],$_GET['asc'],$_GET['desc']);
