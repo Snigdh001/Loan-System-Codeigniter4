@@ -14,35 +14,30 @@ class Api extends  Controller
     
     public function __construct()
     {
-        // header("Access-Control-Allow-Origin: *");
-        // header("Access-Control-Allow-Headers: Authorization, X-API-KEY, Origin,X-Requested-With, Content-Type, Accept, Access-Control-Requested-Method");
-        // header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PATCH, PUT, DELETE, get, post");
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: Authorization, X-API-KEY, Origin,X-Requested-With, Content-Type, Accept, Access-Control-Requested-Method");
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PATCH, PUT, DELETE, get, post");
         // parent::__construct();
-        header('Access-Control-Allow-Origin: *');
-        header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        // header('Access-Control-Allow-Origin: *');
+        // header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+        // header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
         
         
     }
-    // public function index()
-    // {   
+    public function allusers()
+    {   
  
-    //     $apimodel= model(Register::class);
+        $apimodel= model(Register::class);
+        $this->db= $db = db_connect();
   
-    //     $data= array(
-    //       'name'=>"snigdh"
-    //     );
-
-    //     // print_r($data);
-    //     // die;
-    //     // return "shubham dudue";
-    //     return $this->respond($data);
-    // }
-    public function shubhamdudhe()
+        $data=$this->db->table('registeruser')->select()->where('role',"user")->get()->getResultArray();
+        return $this->respond($data);
+    }
+    public function signup()
     {  
-        die("code die here to yout bt");
-        $fname = $this->request->getJsonVar('fname',true);
-        die("code die here");
+        // die("code die here to yout bt");
+        // $fname = $this->request->getJsonVar('fname',true);
+        // die("code die here");
         $apimodel=model(Register::class);
         
             $data = [
@@ -78,5 +73,56 @@ class Api extends  Controller
             return $this->respondCreated($response);
         
     }
-    }
+    public function login()
+    {
+        
+        $email = $this->request->getJsonVar('email');
+        $password=$this->request->getJsonVar('password');
 
+        $usermodel=model(Usermodel::class);
+        $where=[
+            'email'=>$email
+        ];
+        $result = $usermodel->getWhere(['email'=>$email])->getResultArray();
+
+
+         if(isset($result[0]['password']))
+         {
+
+            $password1 = isset($result[0]['password']) ? $result[0]['password'] : '';
+         }
+   
+        if(isset($password1) && !empty($password1)){
+                if($password1==$password){
+            $session = \Config\Services::session();
+            $session->set('id',$result[0]['id']);
+            $response = [
+                'status'   => 200,
+                'error'    => null,
+                'messages' => [
+                    'success' => 'true',
+                    'message'=>"Login Successful",
+                    'role'=>$result[0]['role'],
+                    'id'=>$result[0]['id']
+                ]
+            ]; 
+            
+        }
+    else{
+            $response = [
+                'status'   => 403,
+                'error'    => "Invalid user or password",
+                'messages' => [
+                    'success' => 'false',
+                    'message'=>"Login failed"
+                ]
+            ]; 
+            
+        }
+        
+        
+        return $this->respondCreated($response);
+        # code...
+    }   }
+
+    }

@@ -13,7 +13,7 @@
 <body>
 <?php ?>
     <table class="table table-striped">
-        <thead>
+        <!-- <thead>
             <tr>
                 <th scope="col">S.No</th>
                 <th scope="col">ID</th>
@@ -23,7 +23,21 @@
                 <th scope="col">Role</th>
                 <th scope="col">Action</th>
             </tr>
+        </thead> -->
+        <form action="" id="formid" method="get">
+        <thead >
+            <tr>
+                <th scope="col" >S.no</th>
+                <th scope="col"><button style="border: none;background: white; "type="submit" name="id" value="asc" id="id" onclick="fun(id)" > ID</button></th>
+                <th scope="col"><button style="border: none;background: white; " type="submit"  name="fname" value="asc" id="fname" onclick="fun(id)" > Name</button></th>
+                <th scope="col"><button style="border: none;background: white; "type="submit" name="email" value="asc" id="email"  onclick="fun(id)">Email</button></th>
+                <th scope="col"><button style="border: none;background: white; "type="submit" name="mobile" value="asc" id="mobile" onclick="fun(id)"> Mobile</button></th>
+                
+                <th scope="col" >Role</th>
+                <th scope="col">Action</th>
+            </tr>
         </thead>
+    </form>
         <?php
         $count=0;
         if($_GET['page'])
@@ -70,6 +84,35 @@
             </div>
         </div>
     </div>
+    <script>
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        var form = document.getElementById("formid");
+        function fun(headid)
+        {   
+            
+            const val = urlParams.get(headid)
+            if (val=='asc')
+            {   
+
+                document.getElementById(headid).value= "desc";
+                form.submit();
+
+                
+            }
+            else if(val=='desc')
+            {   
+            document.getElementById(headid).value= "asc";
+                form.submit();
+            }
+            else
+            {   
+            document.getElementById(headid).value= "asc";
+                form.submit();
+                
+        }
+        }
+    </script>
 </body>
 
 </html>

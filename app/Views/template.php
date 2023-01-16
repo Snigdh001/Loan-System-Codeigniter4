@@ -34,9 +34,9 @@
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
-        <a class="nav-link" href="home.php">
+        <a class="nav-link" href="admindashboard">
           <i class='bx bx-chalkboard'></i>
-          <span>Dashboard</span></a>
+           <span>Dashboard</span>
       </li>
 
       <!-- Nav Item - Pages Collapse Menu -->
@@ -45,18 +45,18 @@
           <i class='bx bx-spreadsheet'></i>
           <span>CRM</span>
         </a>
-        <div class="collapse show" id="home-collapse">
+        <!-- <div class="collapse show" id="home-collapse">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
             <li><a href="#" >   <i class='bx bx-search-alt' ></i>CRM Search</a></li>
             <li><a href="#">   <i class='bx bx-bar-chart-square' ></i>Sales Report</a></li>
            
           </ul>
 
-        </div>
+        </div> -->
       </li>
 
       <!-- Nav Item - Utilities Collapse Menu -->
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link" href="files.php">
           <i class='bx bx-line-chart'></i>
           <span>Reports</span>
@@ -66,7 +66,7 @@
         <a class="nav-link" href="child-accounts.php">
           <i class='bx bx-cog'></i>
           <span>Administration Tools</span></a>
-      </li>
+      </li> -->
 
     </ul>
     <!--sodebar-close-->
@@ -88,15 +88,14 @@
 
           <!-- Topbar Search -->
           <form class="form-inline me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search" method="get">
-          <!-- <?= csrf_field() ?> -->
             <div class="input-group search-group ">
               <div class="search-icon">
                 <i class='bx bx-search'></i>
               </div>
               <input type="text" class="form-control border-0 small" placeholder="Search for" name="search"  />
               <button class="btn search-btn">Search</button>
-              <button class="btn search-btn" name="asc" value="asc" > Acending</button>
-              <button class="btn search-btn" name="desc" value="desc" >Desending</button>
+              <!-- <button class="btn search-btn" name="asc" value="asc" > Acending</button>
+              <button class="btn search-btn" name="desc" value="desc" >Desending</button> -->
             </div>
           </form>
 

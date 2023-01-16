@@ -102,24 +102,44 @@ class Register extends Model{
         ->like('fname',$search)
         ->paginate($blog_page);
     }
-    public function DescPaginate($blog_page,$desc)
+    // public function DescPaginate($blog_page,$desc)
+    // {
+    //     $this->db = \Config\Database::connect();
+    //     return $this
+    //     ->table('registeruser')
+    //     ->select('*')
+    //     ->where('role','user')
+    //     ->orderBy('fname','desc')
+    //     ->paginate($blog_page);
+    // }
+    // public function AscPaginate($blog_page,$asc)
+    // {
+    //     $this->db = \Config\Database::connect();
+    //     return $this
+    //     ->table('registeruser')
+    //     ->select('*')
+    //     ->where('role','user')
+    //     ->orderBy('fname','asc')
+    //     ->paginate($blog_page);
+    // }
+    public function DescPaginate($blog_page,$desc,$key)
     {
         $this->db = \Config\Database::connect();
         return $this
         ->table('registeruser')
         ->select('*')
         ->where('role','user')
-        ->orderBy('fname','desc')
+        ->orderBy($key,'desc')
         ->paginate($blog_page);
     }
-    public function AscPaginate($blog_page,$asc)
+    public function AscPaginate($blog_page,$asc,$key)
     {
         $this->db = \Config\Database::connect();
         return $this
         ->table('registeruser')
         ->select('*')
         ->where('role','user')
-        ->orderBy('fname','asc')
+        ->orderBy($key,'asc')
         ->paginate($blog_page);
     }
 

@@ -13,7 +13,7 @@ class Filters extends BaseConfig
 {
     
     public $methods = [
-        'post' => ['csrf'],
+        // 'post' => ['csrf'],
     ];
     /**
      * Configures aliases for Filter classes to
