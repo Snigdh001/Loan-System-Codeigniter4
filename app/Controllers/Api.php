@@ -76,6 +76,8 @@ class Api extends  Controller
     public function login()
     {
         
+        $apimodel= model(Register::class);
+        $this->db= $db = db_connect();
         $email = $this->request->getJsonVar('email');
         $password=$this->request->getJsonVar('password');
 
@@ -83,7 +85,7 @@ class Api extends  Controller
         $where=[
             'email'=>$email
         ];
-        $result = $usermodel->getWhere(['email'=>$email])->getResultArray();
+        $result=$this->db->table('registeruser')->select('email,id,password,role')->where('email',$email)->get()->getResultArray();
 
 
          if(isset($result[0]['password']))
@@ -92,37 +94,47 @@ class Api extends  Controller
             $password1 = isset($result[0]['password']) ? $result[0]['password'] : '';
          }
    
-        if(isset($password1) && !empty($password1)){
-                if($password1==$password){
-            $session = \Config\Services::session();
-            $session->set('id',$result[0]['id']);
-            $response = [
-                'status'   => 200,
-                'error'    => null,
-                'messages' => [
-                    'success' => 'true',
-                    'message'=>"Login Successful",
-                    'role'=>$result[0]['role'],
-                    'id'=>$result[0]['id']
-                ]
-            ]; 
-            
-        }
-    else{
-            $response = [
-                'status'   => 403,
-                'error'    => "Invalid user or password",
-                'messages' => [
-                    'success' => 'false',
-                    'message'=>"Login failed"
-                ]
-            ]; 
-            
-        }
+        if(isset($password1) && !empty($password1))
+        {
+            if($password1==$password){
+                $session = \Config\Services::session();
+                $session->set('id',$result[0]['id']);
+                $response = [
+                    'status'   => 200,
+                    'error'    => null,
+                    'messages' => [
+                        'success' => 'true',
+                        'message'=>"Login Successful",
+                        'role'=>$result[0]['role'],
+                        'id'=>$result[0]['id']
+                    ]];
+                }
+                else{
+                    $response = [
+                        'status'   => 403,
+                        'error'    => "Invalid user or password",
+                        'messages' => [
+                            'success' => 'false',
+                            'message'=>"Login failed"]];  
+                    }
         
         
-        return $this->respondCreated($response);
+                    return $this->respondCreated($response);
         # code...
-    }   }
+        }
+        else
+        {
+            $response = [
+            'status'   => 403,
+            'error'    => "Please Enter Credentials",
+            'messages' => [
+                'success' => 'false',
+                'message'=>"Please Enter Credentials",
+                'role'=>$result[0]['role'],
+                'id'=>$result[0]['id']
+                ]];
+                return $this->respondCreated($response);
+        }
 
+    }
     }
