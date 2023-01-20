@@ -4,7 +4,8 @@ namespace App\Controllers;
 use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\Controller;
-
+use App\Libraries\JwtLibrary;
+use Firebase\JWT\JWT;
 use App\Models\Register;
 
 class Api extends  Controller
@@ -13,7 +14,9 @@ class Api extends  Controller
     protected $table='registeruser';
     
     public function __construct()
-    {
+    {   
+        // $this->load->library('jwt');    
+        
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Headers: Authorization, X-API-KEY, Origin,X-Requested-With, Content-Type, Accept, Access-Control-Requested-Method");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PATCH, PUT, DELETE, get, post");
@@ -24,13 +27,41 @@ class Api extends  Controller
         
         
     }
+    function index()
+    {
+        // $Token =JWT::encode()
+        // $jwt =$this->j->verify("snigdh","Snigdh","ES384");
+        return "indexAPI";
+    }
     public function allusers()
     {   
- 
+        // print_r($_GET);
         $apimodel= model(Register::class);
         $this->db= $db = db_connect();
   
         $data=$this->db->table('registeruser')->select()->where('role',"user")->get()->getResultArray();
+        return $this->respond($data);
+    }
+    public function filters()
+    {   
+        $apimodel= model(Register::class);
+        $this->db= $db = db_connect();
+        // print_r($_GET);
+        $filterdata=array('id'=>'%%');
+        $search=isset($_GET['search']) ? ($_GET['search']):"";
+        // if($search)
+        // {
+        //     $filterdata['id']=$search;
+        //     $filterdata['fname']=$search;
+        //     $filterdata['lname']=$search;
+        //     $filterdata['email']=$search;
+        //     $filterdata['mobile']=$search;
+        // }
+        $lname='';
+        isset($_GET['email']) ? ($filterdata['email']=$_GET['email']):"";
+        isset($_GET['mobile']) ? ($filterdata['mobile']=$_GET['mobile']):"" ;
+        isset($_GET['name']) ? $filterdata['fname']=$_GET['name']:"";
+        $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->where('role',"user",)->like($filterdata)->get()->getResultArray();
         return $this->respond($data);
     }
     public function signup()
@@ -136,5 +167,32 @@ class Api extends  Controller
                 return $this->respondCreated($response);
         }
 
+    }
+    public function deleteuser($id=null)
+    {
+        if($id)
+        {
+            $AdminModel = model(Register::class);
+            $this->db= $db = db_connect();
+            $AdminModel->deletedata($id);
+            $response=[
+                'id'=>$id,
+                'message'=>'Deleted Successfully',
+                'success'=>'true'];
+
+                return $this->respondCreated($response);
+        }
+        else{
+            $response=[
+                'id'=>$id,
+                'message'=>'ERROR',
+                'success'=>'false'];
+
+                return $this->respondCreated($response);
+
+        }
+        return false;
+
+        // return true;
     }
     }
