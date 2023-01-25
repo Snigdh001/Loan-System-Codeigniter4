@@ -5,7 +5,7 @@ use CodeIgniter\Model;
 class Register extends Model{
 
     protected $table = 'registeruser';
-    protected $allowedFields=['fname','lname','email','mobile','password'];
+    protected $allowedFields = ['fname', 'lname', 'mobile', 'email', 'gender','aadhar','pan','profession','loanAmt','income','duration','address1','address2','pincode','place','state','country','status','remark','userid'];
 
     protected $returnType = 'array';
 
@@ -102,26 +102,26 @@ class Register extends Model{
         ->like('fname',$search)
         ->paginate($blog_page);
     }
-    // public function DescPaginate($blog_page,$desc)
-    // {
-    //     $this->db = \Config\Database::connect();
-    //     return $this
-    //     ->table('registeruser')
-    //     ->select('*')
-    //     ->where('role','user')
-    //     ->orderBy('fname','desc')
-    //     ->paginate($blog_page);
-    // }
-    // public function AscPaginate($blog_page,$asc)
-    // {
-    //     $this->db = \Config\Database::connect();
-    //     return $this
-    //     ->table('registeruser')
-    //     ->select('*')
-    //     ->where('role','user')
-    //     ->orderBy('fname','asc')
-    //     ->paginate($blog_page);
-    // }
+                                                                    // public function DescPaginate($blog_page,$desc)
+                                                                    // {
+                                                                    //     $this->db = \Config\Database::connect();
+                                                                    //     return $this
+                                                                    //     ->table('registeruser')
+                                                                    //     ->select('*')
+                                                                    //     ->where('role','user')
+                                                                    //     ->orderBy('fname','desc')
+                                                                    //     ->paginate($blog_page);
+                                                                    // }
+                                                                    // public function AscPaginate($blog_page,$asc)
+                                                                    // {
+                                                                    //     $this->db = \Config\Database::connect();
+                                                                    //     return $this
+                                                                    //     ->table('registeruser')
+                                                                    //     ->select('*')
+                                                                    //     ->where('role','user')
+                                                                    //     ->orderBy('fname','asc')
+                                                                    //     ->paginate($blog_page);
+                                                                    // }
     public function DescPaginate($blog_page,$desc,$key)
     {
         $this->db = \Config\Database::connect();

@@ -5,33 +5,41 @@ use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\Controller;
 use App\Libraries\JwtLibrary;
-use Firebase\JWT\JWT;
 use App\Models\Register;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 class Api extends  Controller
 {
     use ResponseTrait;
     protected $table='registeruser';
+    protected $application='loanapplication';
     
     public function __construct()
     {   
-        // $this->load->library('jwt');    
-        
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Headers: Authorization, X-API-KEY, Origin,X-Requested-With, Content-Type, Accept, Access-Control-Requested-Method");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PATCH, PUT, DELETE, get, post");
         // parent::__construct();
-        // header('Access-Control-Allow-Origin: *');
-        // header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
-        // header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        
         
     }
     function index()
     {
-        // $Token =JWT::encode()
+        // $Token =JWT::encode
         // $jwt =$this->j->verify("snigdh","Snigdh","ES384");
-        return "indexAPI";
+        $secret_key=getenv("JWT_Secret_Key");
+        $iat=time();
+        $exp= time()+(3600000);
+        $payload=[
+            'sub'=>'Authorization',
+            'iat'=>$iat,
+            'exp'=>$exp,
+            'tokenid'=>'1'
+        ];
+        $Token=JWT::encode($payload,$secret_key,"HS256");
+        
+        $decoedkey =JWT::decode($Token,new Key($secret_key,'HS256'));
+        return $decoedkey;
     }
     public function allusers()
     {   
@@ -105,8 +113,12 @@ class Api extends  Controller
         
     }
     public function login()
-    {
+    {   
         
+        // $Token=JWT::encode($payload,$secret_key,"HS256");
+        
+        $Token =$this->index();
+
         $apimodel= model(Register::class);
         $this->db= $db = db_connect();
         $email = $this->request->getJsonVar('email');
@@ -137,7 +149,8 @@ class Api extends  Controller
                         'success' => 'true',
                         'message'=>"Login Successful",
                         'role'=>$result[0]['role'],
-                        'id'=>$result[0]['id']
+                        'id'=>$result[0]['id'],
+                        'authorization'=>$Token,
                     ]];
                 }
                 else{
@@ -164,7 +177,9 @@ class Api extends  Controller
                 'role'=>$result[0]['role'],
                 'id'=>$result[0]['id']
                 ]];
-                return $this->respondCreated($response);
+        
+
+                return $this->respondCreated($response);    
         }
 
     }
@@ -194,5 +209,102 @@ class Api extends  Controller
         return false;
 
         // return true;
+    }
+    public function updateuser($id){
+
+        $data=[
+            "fname"=>$this->request->getVar("fname"),
+            "lname"=>$this->request->getVar("lname"),
+            "email"=>$this->request->getVar("email"),
+            "mobile"=>$this->request->getVar("mobile"),
+        ];
+       
+        
+        $this->db= $db = db_connect();
+        if($id !="")
+        {
+
+            $this->db->table('registeruser')->where('id', $id)->update($data);
+            if ($db->affectedRows() == 1) 
+                    {
+                        $response = [
+                            'status' => 200,
+                            'error' => null,
+                            'messages' => [
+                                'success' =>"true",
+                                'message'=>"Data Update Successfully"
+                            ]
+                        ];
+                    }
+                    return $this->respondCreated($response);
+        }
+        else{
+            $response = [
+                'status' => 500,
+                'error' => "ID is missing",
+                'messages' => [
+                    'success' =>"false",
+                    'message'=>"Error occured",
+                ]
+            ];
+        return $this->respondCreated($response);
+        }
+        return false;
+    }
+
+    public function loanapply(){
+        $apimodel= model(Register::class);
+        $this->db = \Config\Database::connect();
+                                        // $secret_key=getenv("JWT_Secret_Key");
+                                        // $headerdata=$this->request->getheaders();
+                                        // $Token =explode(" ",$headerdata['Authorization'])[1];
+                                        // $decoedkey =JWT::decode($Token,new Key($secret_key,'HS256'));
+                                        // print_r($decoedkey);
+                                        // die();
+    
+        $data = [
+            'fname' => $this->request->getVar('fname'), 
+            'lname' => $this->request->getVar('lname'),
+            'email' => $this->request->getVar('email'),
+            'mobile' => $this->request->getVar('mobile'),
+            'gender' => $this->request->getVar('gender'),
+            'aadhar' => $this->request->getVar('aadhar'),
+            'pan' => $this->request->getVar('pan'),
+            'profession' => $this->request->getVar('profession'),
+            'income' => $this->request->getVar('income'),
+            'loanAmt' => $this->request->getVar('loanAmt'),
+            'duration' => $this->request->getVar('duration'),
+            'address1' => $this->request->getVar('address1'),
+            'address2' => $this->request->getVar('address2'),
+            'pincode' => $this->request->getVar('pincode'),
+            'place' => $this->request->getVar('place'),
+            'country' => $this->request->getVar('country'),
+            'userid' => $this->request->getVar('userid'),
+        ];
+        $result= $this->db->table($application)->insert($data);
+        if(!$result)
+        {   
+            $response=[
+                'status'=>'400',
+                'error'=>$apimodel->error(),
+                'messages' => 'Error Occured',
+            ];
+            return $this->respond($response);
+        }
+        else{
+            $response=[
+                'status'=>'201',
+                'error'=>null,
+                'messages' => 'Application Submit Successfully',
+            ];
+            return $this->respondCreated($response);
+        }
+        return $this->respond($data);
+    }
+    public function allApplication(){
+        $apimodel= model(Register::class);
+        $this->db = \Config\Database::connect();
+        $data = $this->db->table("loanapplication")->select()->where("status",'pending')->get()->getResultArray();
+        return $this->respond($data);
     }
     }
