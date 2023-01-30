@@ -281,7 +281,7 @@ class Api extends  Controller
             'country' => $this->request->getVar('country'),
             'userid' => $this->request->getVar('userid'),
         ];
-        $result= $this->db->table($application)->insert($data);
+        $result= $this->db->table("loanapplication")->insert($data);
         if(!$result)
         {   
             $response=[
