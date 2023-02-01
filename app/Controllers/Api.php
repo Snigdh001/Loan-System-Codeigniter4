@@ -24,12 +24,16 @@ class Api extends  Controller
         
     }
     function index()
+    {   
+        return $this->respond("Indel APi");
+    }
+    function Encodedtoken()
     {
         // $Token =JWT::encode
         // $jwt =$this->j->verify("snigdh","Snigdh","ES384");
         $secret_key=getenv("JWT_Secret_Key");
         $iat=time();
-        $exp= time()+(3600000);
+        $exp= time()+360000000;
         $payload=[
             'sub'=>'Authorization',
             'iat'=>$iat,
@@ -37,24 +41,66 @@ class Api extends  Controller
             'tokenid'=>'1'
         ];
         $Token=JWT::encode($payload,$secret_key,"HS256");
+                                        // $secret_key=getenv("JWT_Secret_Key");
+                                        // $headerdata=$this->request->getheaders();
+                                        // $Token =explode(" ",$headerdata['Authorization'])[1];
+                                        // $decoedkey =JWT::decode($Token,new Key($secret_key,'HS256'));
+                                        // print_r($decoedkey);
+                                        // die();
         
-        $decoedkey =JWT::decode($Token,new Key($secret_key,'HS256'));
-        return $decoedkey;
+        return $Token;
     }
+    function Decodedtoken($headerdata)
+    {
+        
+        $secret_key=getenv("JWT_Secret_Key");
+        if(isset($headerdata['Authorization'])){
+            $token = (array)$headerdata['Authorization'];
+            $token=array_values($token);
+            $decoedkey =(array)JWT::decode($token[1],new Key($secret_key,'HS256'));
+            return $decoedkey;
+    }
+}
+
     public function allusers()
     {   
-        // print_r($_GET);
-        $apimodel= model(Register::class);
-        $this->db= $db = db_connect();
-  
-        $data=$this->db->table('registeruser')->select()->where('role',"user")->get()->getResultArray();
-        return $this->respond($data);
+        
+        $headerdata=$this->request->getheaders();
+        $tokenData=$this->Decodedtoken($headerdata);
+        
+        if($tokenData['tokenid']=='1')
+            {
+                $apimodel= model(Register::class);
+                $this->db= $db = db_connect();
+                $data=$this->db->table('registeruser')->select()->where('role',"user")->get()->getResultArray();
+                return $this->respond($data);
+
+            }
+            else{
+                $response=[
+                    $data =>array(),
+                    $error =>"Token Not Found"
+                ];
+                return $this->respond($response);
+            }
+            
+
     }
+    public function getDetails()
+    
+    {           $id=$this->request->getVar('userId');
+                $apimodel= model(Register::class);
+                $this->db= $db = db_connect();
+                $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->where('id',$id)->get()->getResultArray();
+                return $this->respond($data);
+    }
+
+
+    
     public function filters()
     {   
         $apimodel= model(Register::class);
         $this->db= $db = db_connect();
-        // print_r($_GET);
         $filterdata=array('id'=>'%%');
         $search=isset($_GET['search']) ? ($_GET['search']):"";
         // if($search)
@@ -69,7 +115,11 @@ class Api extends  Controller
         isset($_GET['email']) ? ($filterdata['email']=$_GET['email']):"";
         isset($_GET['mobile']) ? ($filterdata['mobile']=$_GET['mobile']):"" ;
         isset($_GET['name']) ? $filterdata['fname']=$_GET['name']:"";
-        $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->where('role',"user",)->like($filterdata)->get()->getResultArray();
+        if($filterdata['fname'])
+            $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->where('role',"user",)->like($filterdata)->orlike('lname',$filterdata['fname'])->get()->getResultArray();
+        else
+            $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->where('role',"user",)->like($filterdata)->get()->getResultArray();
+        
         return $this->respond($data);
     }
     public function signup()
@@ -115,19 +165,12 @@ class Api extends  Controller
     public function login()
     {   
         
-        // $Token=JWT::encode($payload,$secret_key,"HS256");
-        
-        $Token =$this->index();
-
+        $Token =$this->Encodedtoken();
         $apimodel= model(Register::class);
         $this->db= $db = db_connect();
         $email = $this->request->getJsonVar('email');
         $password=$this->request->getJsonVar('password');
 
-        $usermodel=model(Usermodel::class);
-        $where=[
-            'email'=>$email
-        ];
         $result=$this->db->table('registeruser')->select('email,id,password,role')->where('email',$email)->get()->getResultArray();
 
 
@@ -164,7 +207,7 @@ class Api extends  Controller
         
         
                     return $this->respondCreated($response);
-        # code...
+        # code...Token
         }
         else
         {
@@ -255,12 +298,7 @@ class Api extends  Controller
     public function loanapply(){
         $apimodel= model(Register::class);
         $this->db = \Config\Database::connect();
-                                        // $secret_key=getenv("JWT_Secret_Key");
-                                        // $headerdata=$this->request->getheaders();
-                                        // $Token =explode(" ",$headerdata['Authorization'])[1];
-                                        // $decoedkey =JWT::decode($Token,new Key($secret_key,'HS256'));
-                                        // print_r($decoedkey);
-                                        // die();
+                                        
     
         $data = [
             'fname' => $this->request->getVar('fname'), 
@@ -278,6 +316,7 @@ class Api extends  Controller
             'address2' => $this->request->getVar('address2'),
             'pincode' => $this->request->getVar('pincode'),
             'place' => $this->request->getVar('place'),
+            'state' => $this->request->getVar('state'),
             'country' => $this->request->getVar('country'),
             'userid' => $this->request->getVar('userid'),
         ];
@@ -286,6 +325,7 @@ class Api extends  Controller
         {   
             $response=[
                 'status'=>'400',
+                'success'=>'false',
                 'error'=>$apimodel->error(),
                 'messages' => 'Error Occured',
             ];
@@ -295,6 +335,7 @@ class Api extends  Controller
             $response=[
                 'status'=>'201',
                 'error'=>null,
+                'success'=>'true',
                 'messages' => 'Application Submit Successfully',
             ];
             return $this->respondCreated($response);
@@ -304,7 +345,43 @@ class Api extends  Controller
     public function allApplication(){
         $apimodel= model(Register::class);
         $this->db = \Config\Database::connect();
-        $data = $this->db->table("loanapplication")->select()->where("status",'pending')->get()->getResultArray();
+        // ->where("status",'pending')
+        $data = $this->db->table("loanapplication")->select()->get()->getResultArray();
+        return $this->respond($data);
+    }
+
+
+    public function loanAction(){
+        $apimodel= model(Register::class);
+        $this->db = \Config\Database::connect();
+                                        
+    
+        $data = [
+            'id' => $this->request->getVar('id'),
+            'userid' => $this->request->getVar('userid'),
+            'remark' => $this->request->getVar('remark'),
+            'status' => $this->request->getVar('status'),
+        ];
+        $result= $this->db->table("loanapplication")->where('id',$data['id'])->update($data);
+        if(!$result)
+        {   
+            $response=[
+                'status'=>'400',
+                'success'=>'false',
+                'error'=>$apimodel->error(),
+                'messages' => 'Error Occured',
+            ];
+            return $this->respond($response);
+        }
+        else{
+            $response=[
+                'status'=>'200',
+                'error'=>null,
+                'success'=>'true',
+                'messages' => 'Application Updated Successfully',
+            ];
+            return $this->respond($response);
+        }
         return $this->respond($data);
     }
     }
