@@ -72,8 +72,22 @@ class Api extends  Controller
             {
                 $apimodel= model(Register::class);
                 $this->db= $db = db_connect();
-                $data=$this->db->table('registeruser')->select()->where('role',"user")->get()->getResultArray();
-                return $this->respond($data);
+                $limit=$this->request->getVar("recordlimit");
+                $page = $this->request->getVar("page");
+                $offset=($page-1)*$limit; 
+                $data=$this->db->table('registeruser')->select()->where('role',"user")->limit($limit,$offset)->get()->getResultArray();
+                $totalpages= $this->db->table('registeruser')->select()->where('role',"user")->countAll();
+
+
+                $response=[
+                    "status"=>200,
+                    "error"=>null,
+                    "data"=>$data,
+                    "totalpages"=>ceil($totalpages/$limit)
+
+                ];
+
+                return $this->respond($response);
 
             }
             else{
@@ -87,7 +101,6 @@ class Api extends  Controller
 
     }
     public function getDetails()
-    
     {           $id=$this->request->getVar('userId');
                 $apimodel= model(Register::class);
                 $this->db= $db = db_connect();
@@ -347,6 +360,14 @@ class Api extends  Controller
         $this->db = \Config\Database::connect();
         // ->where("status",'pending')
         $data = $this->db->table("loanapplication")->select()->get()->getResultArray();
+        return $this->respond($data);
+    }
+    public function allApplicationById(){
+        $id=$this->request->getVar('userId');
+        $apimodel= model(Register::class);
+        $this->db = \Config\Database::connect();
+        // ->where("status",'pending')
+        $data = $this->db->table("loanapplication")->select()->where('userid',$id)->get()->getResultArray();
         return $this->respond($data);
     }
 
