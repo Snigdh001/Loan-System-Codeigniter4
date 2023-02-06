@@ -20,7 +20,6 @@ class Api extends  Controller
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Headers: Authorization, X-API-KEY, Origin,X-Requested-With, Content-Type, Accept, Access-Control-Requested-Method");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PATCH, PUT, DELETE, get, post");
-        // parent::__construct();
         
     }
     function index()
@@ -29,8 +28,13 @@ class Api extends  Controller
     }
     function Encodedtoken()
     {
-        // $Token =JWT::encode
-        // $jwt =$this->j->verify("snigdh","Snigdh","ES384");
+                                                                                    // $secret_key=getenv("JWT_Secret_Key");
+                                                                                    // $headerdata=$this->request->getheaders();
+                                                                                    // $Token =explode(" ",$headerdata['Authorization'])[1];
+                                                                                    // $decoedkey =JWT::decode($Token,new Key($secret_key,'HS256'));
+                                                                                    // print_r($decoedkey);
+                                                                                    // die();
+        
         $secret_key=getenv("JWT_Secret_Key");
         $iat=time();
         $exp= time()+360000000;
@@ -41,12 +45,6 @@ class Api extends  Controller
             'tokenid'=>'1'
         ];
         $Token=JWT::encode($payload,$secret_key,"HS256");
-                                        // $secret_key=getenv("JWT_Secret_Key");
-                                        // $headerdata=$this->request->getheaders();
-                                        // $Token =explode(" ",$headerdata['Authorization'])[1];
-                                        // $decoedkey =JWT::decode($Token,new Key($secret_key,'HS256'));
-                                        // print_r($decoedkey);
-                                        // die();
         
         return $Token;
     }
@@ -115,19 +113,10 @@ class Api extends  Controller
         $apimodel= model(Register::class);
         $this->db= $db = db_connect();
         $filterdata=array('id'=>'%%');
-        $search=isset($_GET['search']) ? ($_GET['search']):"";
-        // if($search)
-        // {
-        //     $filterdata['id']=$search;
-        //     $filterdata['fname']=$search;
-        //     $filterdata['lname']=$search;
-        //     $filterdata['email']=$search;
-        //     $filterdata['mobile']=$search;
-        // }
-        $lname='';
         isset($_GET['email']) ? ($filterdata['email']=$_GET['email']):"";
         isset($_GET['mobile']) ? ($filterdata['mobile']=$_GET['mobile']):"" ;
         isset($_GET['name']) ? $filterdata['fname']=$_GET['name']:"";
+
         if($filterdata['fname'])
             $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->where('role',"user",)->like($filterdata)->orlike('lname',$filterdata['fname'])->get()->getResultArray();
         else
@@ -137,9 +126,7 @@ class Api extends  Controller
     }
     public function signup()
     {  
-        // die("code die here to yout bt");
-        // $fname = $this->request->getJsonVar('fname',true);
-        // die("code die here");
+       
         $apimodel=model(Register::class);
         
             $data = [
