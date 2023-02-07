@@ -74,8 +74,8 @@ class Api extends  Controller
                 $page = $this->request->getVar("page");
                 $offset=($page-1)*$limit; 
                 $data=$this->db->table('registeruser')->select()->where('role',"user")->limit($limit,$offset)->get()->getResultArray();
-                $totalpages= $this->db->table('registeruser')->select()->where('role',"user")->countAll();
-
+                $totalpages= $this->db->table('registeruser')->select()->where('role',"user")->countAllResults();
+                
 
                 $response=[
                     "status"=>200,
@@ -144,23 +144,26 @@ class Api extends  Controller
                 'status' => 403,
                 'error' => null,
                 'messages' => [
-                    'success' =>$result,
+                    'success' =>'false',
                     'message'=>$message
 
                 ]
             ];
             return $this->respondCreated($response);
          }
+         else{
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'messages' => [
-                    'success' =>"true"
-                ]
-            ];
-            return $this->respondCreated($response);
-        
+             $response = [
+                 'status' => 201,
+                 'error' => null,
+                 'messages' => [
+                     'success' =>"true"
+                     ]
+                    ];
+                    return $this->respondCreated($response);
+                }
+            
+        return $data;
     }
     public function login()
     {   

@@ -5,7 +5,8 @@ use CodeIgniter\Model;
 class Register extends Model{
 
     protected $table = 'registeruser';
-    protected $allowedFields = ['fname', 'lname', 'mobile', 'email', 'gender','aadhar','pan','profession','loanAmt','income','duration','address1','address2','pincode','place','state','country','status','remark','userid'];
+
+    protected $allowedFields = ['fname', 'lname', 'mobile', 'email', 'gender','aadhar','pan','profession','loanAmt','income','duration','address1','address2','pincode','place','state','country','status','remark','userid','password'];
 
     protected $returnType = 'array';
 
@@ -41,7 +42,6 @@ class Register extends Model{
     public function UpdateDetails($data)
     {
                     $db = db_connect();
-        // {   $id=$this->request->getPost('id');
                      if($data['mobile']!=NULL)
                     {
                         $data1=['mobile'=>$data['mobile']];
