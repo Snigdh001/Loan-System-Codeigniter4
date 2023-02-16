@@ -73,7 +73,7 @@ class Api extends  Controller
                 $limit=$this->request->getVar("recordlimit");
                 $page = $this->request->getVar("page");
                 $offset=($page-1)*$limit; 
-                $data=$this->db->table('registeruser')->select()->where('role',"user")->limit($limit,$offset)->get()->getResultArray();
+                $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->where('role',"user")->limit($limit,$offset)->get()->getResultArray();
                 $totalpages= $this->db->table('registeruser')->select()->where('role',"user")->countAllResults();
                 
 
@@ -174,7 +174,7 @@ class Api extends  Controller
         $email = $this->request->getJsonVar('email');
         $password=$this->request->getJsonVar('password');
 
-        $result=$this->db->table('registeruser')->select('email,id,password,role')->where('email',$email)->get()->getResultArray();
+        $result=$this->db->table('registeruser')->select('email,id,password,role,mobile,fname,lname')->where('email',$email)->get()->getResultArray();
 
 
          if(isset($result[0]['password']))
@@ -196,6 +196,9 @@ class Api extends  Controller
                         'message'=>"Login Successful",
                         'role'=>$result[0]['role'],
                         'id'=>$result[0]['id'],
+                        'email'=>$result[0]['email'],
+                        'mobile'=>$result[0]['mobile'],
+                        'name'=>$result[0]['fname'].' '.$result[0]['lname'],
                         'authorization'=>$Token,
                     ]];
                 }
@@ -345,7 +348,8 @@ class Api extends  Controller
         }
         return $this->respond($data);
     }
-    public function allApplication(){
+    public function 
+    Application(){
         $apimodel= model(Register::class);
         $this->db = \Config\Database::connect();
         // ->where("status",'pending')

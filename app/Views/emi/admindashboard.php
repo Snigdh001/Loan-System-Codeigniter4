@@ -49,7 +49,7 @@
             $count+=1
         ?>
         <tbody>
-            <tr>
+            <tr >
                 <th scope="row"><?php echo $count?></th>
                 <th scope="row"><?php echo $rows['id']?></th>
                 <td><?php echo($rows['fname'] . ' '. $rows['lname'])?></td>
