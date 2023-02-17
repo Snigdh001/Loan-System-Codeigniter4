@@ -134,7 +134,6 @@ class Api extends  Controller
         'lname'=>$_GET['keyWord'],
         'mobile'=>$_GET['keyWord'],
         'email'=>$_GET['keyWord'],
-        'mobile'=>$_GET['keyWord'],
         'role'=>$_GET['keyWord']
     );
                 $limit=$this->request->getVar("recordlimit");
@@ -156,11 +155,24 @@ class Api extends  Controller
         $this->db= $db = db_connect();
         $filterkey=array(
             'id'=>$_GET['keyWord'],
+            'userid'=>$_GET['keyWord'],
         'fname'=>$_GET['keyWord'],
         'lname'=>$_GET['keyWord'],
         'mobile'=>$_GET['keyWord'],
         'email'=>$_GET['keyWord'],
-        'mobile'=>$_GET['keyWord'],
+        'aadhar'=>$_GET['keyWord'],
+        'pan'=>$_GET['keyWord'],
+        'loanAmt'=>$_GET['keyWord'],
+        'duration'=>$_GET['keyWord'],
+        'income'=>$_GET['keyWord'],
+        'address1'=>$_GET['keyWord'],
+        'address2'=>$_GET['keyWord'],
+        'place'=>$_GET['keyWord'],
+        'pincode'=>$_GET['keyWord'],
+        'status'=>$_GET['keyWord'],
+        'country'=>$_GET['keyWord'],
+        'status'=>$_GET['keyWord'],
+        'remark'=>$_GET['keyWord'],
     );
                 $limit=$this->request->getVar("recordlimit");
                 $page = $this->request->getVar("page");
@@ -180,16 +192,20 @@ class Api extends  Controller
     {  
        
         $apimodel=model(Register::class);
+        // $str = $this->request->getVar('mobile');
+        // $array = explode('-', $str);
+        // $mobile= implode ('', $array);
         
             $data = [
                 'fname' => $this->request->getVar('fname'),
                 'lname' => $this->request->getVar('lname'),
                 'email' => $this->request->getVar('email'),
                 'mobile' => $this->request->getVar('mobile'),
+                // 'mobile' => $mobile, //for postman signup
                 'password' => $this->request->getVar('password'),
             ];
          $result = $apimodel->insert($data);
-        
+    //    $result=0;
          if(!$result){
             $message = $apimodel->errors();
             $response = [
@@ -201,7 +217,7 @@ class Api extends  Controller
 
                 ]
             ];
-            return $this->respondCreated($response);
+            return $this->respond($data);
          }
          else{
 
