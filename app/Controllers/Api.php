@@ -73,7 +73,7 @@ class Api extends  Controller
                 $limit=$this->request->getVar("recordlimit");
                 $page = $this->request->getVar("page");
                 $offset=($page-1)*$limit; 
-                $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->where('role',"user")->limit($limit,$offset)->get()->getResultArray();
+                $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->limit($limit,$offset)->get()->getResultArray();
                 $totalpages= $this->db->table('registeruser')->select()->where('role',"user")->countAllResults();
                 
 
@@ -82,7 +82,6 @@ class Api extends  Controller
                     "error"=>null,
                     "data"=>$data,
                     "totalpages"=>ceil($totalpages/$limit)
-
                 ];
 
                 return $this->respond($response);
@@ -124,6 +123,59 @@ class Api extends  Controller
         
         return $this->respond($data);
     }
+
+    public function search()
+    {   
+        $apimodel= model(Register::class);
+        $this->db= $db = db_connect();
+        $filterkey=array(
+            'id'=>$_GET['keyWord'],
+        'fname'=>$_GET['keyWord'],
+        'lname'=>$_GET['keyWord'],
+        'mobile'=>$_GET['keyWord'],
+        'email'=>$_GET['keyWord'],
+        'mobile'=>$_GET['keyWord'],
+        'role'=>$_GET['keyWord']
+    );
+                $limit=$this->request->getVar("recordlimit");
+                $page = $this->request->getVar("page");
+                $offset=($page-1)*$limit;
+                $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->orlike($filterkey)->limit($limit,$offset)->get()->getResultArray();
+                $totalrecord= $this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->orlike($filterkey)->countAllResults();
+    $response=[
+        "status"=>200,
+        "error"=>null,
+        "data"=>$data,
+        "totalpages"=>ceil($totalrecord/$limit)
+    ];
+        return $this->respond($response);
+    }
+    public function searchApplication()
+    {   
+        $apimodel= model(Register::class);
+        $this->db= $db = db_connect();
+        $filterkey=array(
+            'id'=>$_GET['keyWord'],
+        'fname'=>$_GET['keyWord'],
+        'lname'=>$_GET['keyWord'],
+        'mobile'=>$_GET['keyWord'],
+        'email'=>$_GET['keyWord'],
+        'mobile'=>$_GET['keyWord'],
+    );
+                $limit=$this->request->getVar("recordlimit");
+                $page = $this->request->getVar("page");
+                $offset=($page-1)*$limit;
+                $data=$this->db->table('loanapplication')->select()->orlike($filterkey)->limit($limit,$offset)->get()->getResultArray();
+                $totalrecord= $this->db->table('loanapplication')->select()->orlike($filterkey)->countAllResults();
+    $response=[
+        "status"=>200,
+        "error"=>null,
+        "data"=>$data,
+        "totalpages"=>ceil($totalrecord/$limit)
+    ];
+        return $this->respond($response);
+    }
+
     public function signup()
     {  
        
@@ -370,13 +422,14 @@ class Api extends  Controller
         $apimodel= model(Register::class);
         $this->db = \Config\Database::connect();
                                         
-    
+        
         $data = [
             'id' => $this->request->getVar('id'),
             'userid' => $this->request->getVar('userid'),
             'remark' => $this->request->getVar('remark'),
             'status' => $this->request->getVar('status'),
         ];
+        // print_r($data['id']);
         $result= $this->db->table("loanapplication")->where('id',$data['id'])->update($data);
         if(!$result)
         {   
