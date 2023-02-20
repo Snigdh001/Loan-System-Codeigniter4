@@ -267,6 +267,8 @@ class Api extends  Controller
                         'email'=>$result[0]['email'],
                         'mobile'=>$result[0]['mobile'],
                         'name'=>$result[0]['fname'].' '.$result[0]['lname'],
+                        'fname'=>$result[0]['fname'],
+                        'lname'=>$result[0]['lname'],
                         'authorization'=>$Token,
                     ]];
                 }
