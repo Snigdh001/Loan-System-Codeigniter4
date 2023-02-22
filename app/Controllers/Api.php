@@ -396,8 +396,13 @@ class Api extends  Controller
             'country' => $this->request->getVar('country'),
             'userid' => $this->request->getVar('userid'),
         ];
-        $result= $this->db->table("loanapplication")->insert($data);
-        if(!$result)
+        // 'userid',$data['userid'] and 'status','pending'
+        $flag=$this->db->table("loanapplication")->select('userid,status')->where(['userid'=>$data['userid'],'status'=>'pending'])->countAllResults();
+        if($flag<1)
+        {
+            
+            $result= $this->db->table("loanapplication")->insert($data);
+            if(!$result)
         {   
             $response=[
                 'status'=>'400',
@@ -418,6 +423,17 @@ class Api extends  Controller
         }
         return $this->respond($data);
     }
+    else
+    {
+        $response=[
+            'status'=>'409',
+            'success'=>'false',
+            'error'=>$apimodel->error(),
+            'messages' => 'Duplicate record.',
+        ];
+        return $this->respond($response);
+    }
+}
     public function 
     Application(){
         $apimodel= model(Register::class);
