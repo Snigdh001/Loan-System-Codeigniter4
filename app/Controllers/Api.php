@@ -171,7 +171,7 @@ class Api extends  Controller
         'pincode'=>$_GET['keyWord'],
         'status'=>$_GET['keyWord'],
         'country'=>$_GET['keyWord'],
-        'status'=>$_GET['keyWord'],
+        'state'=>$_GET['keyWord'],
         'remark'=>$_GET['keyWord'],
     );
                 $limit=$this->request->getVar("recordlimit");
