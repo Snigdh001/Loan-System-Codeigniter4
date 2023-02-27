@@ -434,8 +434,7 @@ class Api extends  Controller
         return $this->respond($response);
     }
 }
-    public function 
-    Application(){
+    public function Application(){
         $apimodel= model(Register::class);
         $this->db = \Config\Database::connect();
         // ->where("status",'pending')
