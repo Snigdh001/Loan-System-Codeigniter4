@@ -319,7 +319,7 @@ class Api extends  Controller
         else{
             $response=[
                 'id'=>$id,
-                'message'=>'ERROR',
+                'message'=>$apimodel->error(),
                 'success'=>'false'];
 
                 return $this->respondCreated($response);
@@ -415,7 +415,7 @@ class Api extends  Controller
         else{
             $response=[
                 'status'=>'201',
-                'error'=>null,
+                'error'=>$apimodel->error(),
                 'success'=>'true',
                 'messages' => 'Application Submit Successfully',
             ];
@@ -423,7 +423,7 @@ class Api extends  Controller
         }
         return $this->respond($data);
     }
-    else
+        else
     {
         $response=[
             'status'=>'409',
