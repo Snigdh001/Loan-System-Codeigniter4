@@ -14,6 +14,7 @@ class Api extends  Controller
     use ResponseTrait;
     protected $table='registeruser';
     protected $application='loanapplication';
+    protected $emi='loanSummary';
     
     public function __construct()
     {   
@@ -485,4 +486,76 @@ class Api extends  Controller
         }
         return $this->respond($data);
     }
+public function EmiDetails()
+{
+    $apimodel= model(Register::class);
+    $this->db = \Config\Database::connect();
+    $loanid=$this->request->getVar("loanid");
+    $result=$this->db->table("loansummary")->select()->where("loanid",$loanid)->get()->getResultArray();
+        return $this->respond($result);
+}
+public function EmiPaid()
+{
+    $apimodel= model(Register::class);
+    $this->db = \Config\Database::connect();
+    $id=$this->request->getVar('id');
+    
+    $emiPaidPrevious=$this->db->table("loansummary")->select('emiPaid')->where('id',$id)->get()->getRowArray();
+    $emi=[
+        'emiPaid'=>$emiPaidPrevious['emiPaid']+1,
+    ];
+    $respond=[
+        'result'=>$this->db->table("loansummary")->where('id',$id)->update($emi),
+        'message'=>$apimodel->error()     
+    ];
+    return $this->respond($id);
+}
+public function EmiChart()
+{
+    $apimodel= model(Register::class);
+    $this->db = \Config\Database::connect();
+
+            $data=[
+            "userid"=>$this->request->getVar("userid"),
+            "loanid"=>$this->request->getVar("loanid"),
+            "loanAmt"=>$this->request->getVar("loanAmt"),
+            "interestRate"=>$this->request->getVar("interestRate"),
+            "totalAmt"=>$this->request->getVar("totalAmt"),
+            "totalIntAmt"=>$this->request->getVar("totalIntAmt"),
+            "startDate"=>$this->request->getVar("startDate"),
+            "emiAmt"=>$this->request->getVar("emiAmt"),
+            "duration"=>$this->request->getVar("duration"),
+            "emiPaid"=>0,
+        ];
+        $result= $this->db->table("loansummary")->insert($data);
+        if(!$result)
+        {   
+            $response=[
+                'status'=>'400',
+                'success'=>'false',
+                'error'=>$apimodel->error(),
+                'messages' => 'Table Not Created',
+            ];
+            return $this->respond($response);
+        }
+        else{
+        $tableres=$this->db->table("loansummary")->select('id,loanid')->where("loanid",$data['loanid'])->get()->getRowArray();
+        $data=[
+            'tableid'=>$tableres['id'],
+        ];
+        $result= $this->db->table("loanapplication")->where('id',$tableres['loanid'])->update($data);
+        $response=[
+            'status'=>'201',
+            'error'=>$apimodel->error(),
+            'success'=>'true',
+            'messages' => $result,
+            'tableid'=>$tableres['id'],
+            'loanid'=>$tableres['loanid']
+        ];
+        return $this->respondCreated($response);
     }
+    return $this->respond($data);
+}
+     
+    }
+    

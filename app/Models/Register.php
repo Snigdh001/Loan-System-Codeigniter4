@@ -6,7 +6,7 @@ class Register extends Model{
 
     protected $table = 'registeruser';
 
-    protected $allowedFields = ['fname', 'lname', 'mobile', 'email', 'gender','aadhar','pan','profession','loanAmt','income','duration','address1','address2','pincode','place','state','country','status','remark','userid','password','userId'];
+    protected $allowedFields = ['fname', 'lname', 'mobile', 'email', 'gender','aadhar','pan','profession','loanAmt','income','duration','address1','address2','pincode','place','state','country','status','remark','userid','password','userId','loanid','interestRate','totalAmt','totalIntAmt','startDate','emiAmt','emiPaid','id'];
 
     protected $returnType = 'array';
 
