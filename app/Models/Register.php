@@ -4,11 +4,15 @@ namespace App\Models;
 use CodeIgniter\Model;
 class Register extends Model{
 
-    protected $table = 'registeruser';
+    protected $table = "email";
+    // protected $table = "email";
 
-    protected $allowedFields = ['fname', 'lname', 'mobile', 'email', 'gender','aadhar','pan','profession','loanAmt','income','duration','address1','address2','pincode','place','state','country','status','remark','userid','password','userId','loanid','interestRate','totalAmt','totalIntAmt','startDate','emiAmt','emiPaid','id'];
+    // protected $allowedFields = ['fname', 'lname', 'mobile', 'email', 'gender','aadhar','pan','profession','loanAmt','income','duration','address1','address2','pincode','place','state','country','status','remark','userid','password','userId','loanid','interestRate','totalAmt','totalIntAmt','startDate','emiAmt','emiPaid','id'];
+    // protected $allowedFields = ['id','pr_id','name','category_name','description','image','price','quantity'];
 
-    protected $returnType = 'array';
+
+    protected $allowedFields = ['id','name','email','password','senderId','useId','sender','receiver','subject','message','date','readStatus','file','sentStatus'];
+    // protected $returnType = 'array';
 
     public function __construct()
     {
@@ -153,6 +157,7 @@ class Register extends Model{
         ->orderBy('id')
         ->paginate($blog_page);
     }
+    
     
     
     

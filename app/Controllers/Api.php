@@ -12,10 +12,8 @@ use Firebase\JWT\Key;
 class Api extends  Controller
 {
     use ResponseTrait;
-    protected $table='registeruser';
-    protected $application='loanapplication';
-    protected $emi='loanSummary';
-    
+    protected $table='email,register';
+    // protected $table='email';
     public function __construct()
     {   
         header("Access-Control-Allow-Origin: *");
@@ -27,223 +25,55 @@ class Api extends  Controller
     {   
         return $this->respond("Indel APi");
     }
-    function Encodedtoken()
-    {
-                                                                                    // $secret_key=getenv("JWT_Secret_Key");
-                                                                                    // $headerdata=$this->request->getheaders();
-                                                                                    // $Token =explode(" ",$headerdata['Authorization'])[1];
-                                                                                    // $decoedkey =JWT::decode($Token,new Key($secret_key,'HS256'));
-                                                                                    // print_r($decoedkey);
-                                                                                    // die();
-        
-        $secret_key=getenv("JWT_Secret_Key");
-        $iat=time();
-        $exp= time()+360000000;
-        $payload=[
-            'sub'=>'Authorization',
-            'iat'=>$iat,
-            'exp'=>$exp,
-            'tokenid'=>'1'
-        ];
-        $Token=JWT::encode($payload,$secret_key,"HS256");
-        
-        return $Token;
-    }
-    function Decodedtoken($headerdata)
-    {
-        
-        $secret_key=getenv("JWT_Secret_Key");
-        if(isset($headerdata['Authorization'])){
-            $token = (array)$headerdata['Authorization'];
-            $token=array_values($token);
-            $decoedkey =(array)JWT::decode($token[1],new Key($secret_key,'HS256'));
-            return $decoedkey;
-    }
-}
-
-    public function allusers()
-    {   
-        
-        $headerdata=$this->request->getheaders();
-        $tokenData=$this->Decodedtoken($headerdata);
-        
-        if($tokenData['tokenid']=='1')
-            {
-                $apimodel= model(Register::class);
-                $this->db= $db = db_connect();
-                $limit=$this->request->getVar("recordlimit");
-                $page = $this->request->getVar("page");
-                $offset=($page-1)*$limit; 
-                $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->limit($limit,$offset)->get()->getResultArray();
-                $totalpages= $this->db->table('registeruser')->select()->where('role',"user")->countAllResults();
-                
-
-                $response=[
-                    "status"=>200,
-                    "error"=>null,
-                    "data"=>$data,
-                    "totalpages"=>ceil($totalpages/$limit)
-                ];
-
-                return $this->respond($response);
-
-            }
-            else{
-                $response=[
-                    $data =>array(),
-                    $error =>"Token Not Found"
-                ];
-                return $this->respond($response);
-            }
-            
-
-    }
-    public function getDetails()
-    {           $id=$this->request->getVar('userId');
-                $apimodel= model(Register::class);
-                $this->db= $db = db_connect();
-                $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->where('id',$id)->get()->getResultArray();
-                return $this->respond($data);
-    }
-
-
-    
-    public function filters()
-    {   
-        $apimodel= model(Register::class);
-        $this->db= $db = db_connect();
-        $filterdata=array('id'=>'%%');
-        isset($_GET['email']) ? ($filterdata['email']=$_GET['email']):"";
-        isset($_GET['mobile']) ? ($filterdata['mobile']=$_GET['mobile']):"" ;
-        isset($_GET['name']) ? $filterdata['fname']=$_GET['name']:"";
-
-        if($filterdata['fname'])
-            $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->where('role',"user",)->like($filterdata)->orlike('lname',$filterdata['fname'])->get()->getResultArray();
-        else
-            $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->where('role',"user",)->like($filterdata)->get()->getResultArray();
-        
-        return $this->respond($data);
-    }
-
-    public function search()
-    {   
-        $apimodel= model(Register::class);
-        $this->db= $db = db_connect();
-        $filterkey=array(
-            'id'=>$_GET['keyWord'],
-        'fname'=>$_GET['keyWord'],
-        'lname'=>$_GET['keyWord'],
-        'mobile'=>$_GET['keyWord'],
-        'email'=>$_GET['keyWord'],
-        'role'=>$_GET['keyWord']
-    );
-                $limit=$this->request->getVar("recordlimit");
-                $page = $this->request->getVar("page");
-                $offset=($page-1)*$limit;
-                $data=$this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->orlike($filterkey)->limit($limit,$offset)->get()->getResultArray();
-                $totalrecord= $this->db->table('registeruser')->select('id,fname,lname,email,mobile,role')->orlike($filterkey)->countAllResults();
-    $response=[
-        "status"=>200,
-        "error"=>null,
-        "data"=>$data,
-        "totalpages"=>ceil($totalrecord/$limit)
-    ];
-        return $this->respond($response);
-    }
-    public function searchApplication()
-    {   
-        $apimodel= model(Register::class);
-        $this->db= $db = db_connect();
-        $filterkey=array(
-            'id'=>$_GET['keyWord'],
-            'userid'=>$_GET['keyWord'],
-        'fname'=>$_GET['keyWord'],
-        'lname'=>$_GET['keyWord'],
-        'mobile'=>$_GET['keyWord'],
-        'email'=>$_GET['keyWord'],
-        'aadhar'=>$_GET['keyWord'],
-        'pan'=>$_GET['keyWord'],
-        'loanAmt'=>$_GET['keyWord'],
-        'duration'=>$_GET['keyWord'],
-        'income'=>$_GET['keyWord'],
-        'address1'=>$_GET['keyWord'],
-        'address2'=>$_GET['keyWord'],
-        'place'=>$_GET['keyWord'],
-        'pincode'=>$_GET['keyWord'],
-        'status'=>$_GET['keyWord'],
-        'country'=>$_GET['keyWord'],
-        'state'=>$_GET['keyWord'],
-        'remark'=>$_GET['keyWord'],
-    );
-                $limit=$this->request->getVar("recordlimit");
-                $page = $this->request->getVar("page");
-                $offset=($page-1)*$limit;
-                $data=$this->db->table('loanapplication')->select()->orlike($filterkey)->limit($limit,$offset)->get()->getResultArray();
-                $totalrecord= $this->db->table('loanapplication')->select()->orlike($filterkey)->countAllResults();
-    $response=[
-        "status"=>200,
-        "error"=>null,
-        "data"=>$data,
-        "totalpages"=>ceil($totalrecord/$limit)
-    ];
-        return $this->respond($response);
-    }
-
     public function signup()
     {  
-       
         $apimodel=model(Register::class);
-        // $str = $this->request->getVar('mobile');
-        // $array = explode('-', $str);
-        // $mobile= implode ('', $array);
+        $this->db= $db = db_connect();
         
             $data = [
-                'fname' => $this->request->getVar('fname'),
-                'lname' => $this->request->getVar('lname'),
+                'name' => $this->request->getVar('name'),
                 'email' => $this->request->getVar('email'),
-                'mobile' => $this->request->getVar('mobile'),
-                // 'mobile' => $mobile, //for postman signup
                 'password' => $this->request->getVar('password'),
             ];
-         $result = $apimodel->insert($data);
+         $result = $this->db->table('register')->insert($data);
     //    $result=0;
          if(!$result){
-            $message = $apimodel->errors();
             $response = [
                 'status' => 403,
                 'error' => null,
                 'messages' => [
                     'success' =>'false',
-                    'message'=>$message
+                    
 
                 ]
             ];
-            return $this->respond($data);
+            return $this->respond($response);
          }
          else{
 
              $response = [
-                 'status' => 201,
-                 'error' => null,
-                 'messages' => [
-                     'success' =>"true"
-                     ]
-                    ];
-                    return $this->respondCreated($response);
+                'status' => 201,
+                'error' => null,
+                'messages' => [
+                'success' =>"true",
+                'message'=> $apimodel->errors()]];
+                return $this->respondCreated($response);
                 }
             
         return $data;
     }
+
+   
     public function login()
     {   
         
-        $Token =$this->Encodedtoken();
+      
         $apimodel= model(Register::class);
         $this->db= $db = db_connect();
         $email = $this->request->getJsonVar('email');
         $password=$this->request->getJsonVar('password');
 
-        $result=$this->db->table('registeruser')->select('email,id,password,role,mobile,fname,lname')->where('email',$email)->get()->getResultArray();
+        $result=$this->db->table('register')->select('user_id,name,email,password')->where('email',$email)->get()->getResultArray();
 
 
          if(isset($result[0]['password']))
@@ -255,22 +85,15 @@ class Api extends  Controller
         if(isset($password1) && !empty($password1))
         {
             if($password1==$password){
-                $session = \Config\Services::session();
-                $session->set('id',$result[0]['id']);
                 $response = [
                     'status'   => 200,
                     'error'    => null,
                     'messages' => [
                         'success' => 'true',
                         'message'=>"Login Successful",
-                        'role'=>$result[0]['role'],
-                        'id'=>$result[0]['id'],
+                        'id'=>$result[0]['user_id'],
                         'email'=>$result[0]['email'],
-                        'mobile'=>$result[0]['mobile'],
-                        'name'=>$result[0]['fname'].' '.$result[0]['lname'],
-                        'fname'=>$result[0]['fname'],
-                        'lname'=>$result[0]['lname'],
-                        'authorization'=>$Token,
+                        'name'=>$result[0]['name'],
                     ]];
                 }
                 else{
@@ -279,283 +102,118 @@ class Api extends  Controller
                         'error'    => "Invalid user or password",
                         'messages' => [
                             'success' => 'false',
-                            'message'=>"Login failed"]];  
+                            'message'=>$apimodel->errors()]];  
                     }
         
         
-                    return $this->respondCreated($response);
+                    return $this->respond($response);
         # code...Token
         }
         else
         {
             $response = [
             'status'   => 403,
-            'error'    => "Please Enter Credentials",
+            'error'    => $apimodel->errors(),
             'messages' => [
                 'success' => 'false',
                 'message'=>"Please Enter Credentials",
-                'role'=>$result[0]['role'],
-                'id'=>$result[0]['id']
+                'id'=>$result[0]['user_id']
                 ]];
         
 
-                return $this->respondCreated($response);    
+                return $this->respond($response);    
         }
 
     }
-    public function deleteuser($id=null)
-    {
-        if($id)
-        {
-            $AdminModel = model(Register::class);
-            $this->db= $db = db_connect();
-            $AdminModel->deletedata($id);
-            $response=[
-                'id'=>$id,
-                'message'=>'Deleted Successfully',
-                'success'=>'true'];
-
-                return $this->respondCreated($response);
-        }
-        else{
-            $response=[
-                'id'=>$id,
-                'message'=>$apimodel->error(),
-                'success'=>'false'];
-
-                return $this->respondCreated($response);
-
-        }
-        return false;
-
-        // return true;
-    }
-    public function updateuser($id){
-
-        $data=[
-            "fname"=>$this->request->getVar("fname"),
-            "lname"=>$this->request->getVar("lname"),
-            "email"=>$this->request->getVar("email"),
-            "mobile"=>$this->request->getVar("mobile"),
-        ];
-       
-        
+    public function newMail(){
+        $apimodel= model(Register::class);
         $this->db= $db = db_connect();
-        if($id !="")
-        {
-
-            $this->db->table('registeruser')->where('id', $id)->update($data);
-            if ($db->affectedRows() == 1) 
-                    {
-                        $response = [
-                            'status' => 200,
-                            'error' => null,
-                            'messages' => [
-                                'success' =>"true",
-                                'message'=>"Data Update Successfully"
-                            ]
-                        ];
-                    }
-                    return $this->respondCreated($response);
-        }
-        else{
+        
+        
+        $file=$_FILES['attachment'];
+        $result=move_uploaded_file($file['tmp_name'],'./static/uploadimg/'.$file['name']);
+         $data=[
+           
+            'senderId'=>$this->request->getVar("user_id"),
+            "sender"=>$this->request->getVar("sender"),
+            "receiver"=>$this->request->getVar("receiver"),
+            "subject"=>$this->request->getVar("subject"),
+            "message"=>$this->request->getVar("message"),
+            "file" => $file['name']!=""?'http://localhost/snigdh_ci4/static/uploadimg/'.$file['name']:NULL,
+            
+        ];
+        // print_r( $file) ;
+        // print_r( $apimodel->error()) ;
+        // die;
+        $result=$apimodel->insert($data);
+        if(!$result){
             $response = [
-                'status' => 500,
-                'error' => "ID is missing",
+                'status' => 403,
+                'error' => null,
                 'messages' => [
-                    'success' =>"false",
-                    'message'=>"Error occured",
+                    'success' =>'false',
+                    'message'=> $apimodel->errors(),
+
                 ]
             ];
-        return $this->respondCreated($response);
-        }
-        return false;
-    }
+            return $this->respond($response);
+         }
+         else{
 
-    public function loanapply(){
+             $response = [
+                'status' => 201,
+                'error' => null,
+                'messages' => [
+                'success' =>"true"]];
+                return $this->respondCreated($response);
+                }
+        return $apimodel->errors();
+    }
+    public function allEmail(){
         $apimodel= model(Register::class);
         $this->db = \Config\Database::connect();
-                                        
-    
-        $data = [
-            'fname' => $this->request->getVar('fname'), 
-            'lname' => $this->request->getVar('lname'),
-            'email' => $this->request->getVar('email'),
-            'mobile' => $this->request->getVar('mobile'),
-            'gender' => $this->request->getVar('gender'),
-            'aadhar' => $this->request->getVar('aadhar'),
-            'pan' => $this->request->getVar('pan'),
-            'profession' => $this->request->getVar('profession'),
-            'income' => $this->request->getVar('income'),
-            'loanAmt' => $this->request->getVar('loanAmt'),
-            'duration' => $this->request->getVar('duration'),
-            'address1' => $this->request->getVar('address1'),
-            'address2' => $this->request->getVar('address2'),
-            'pincode' => $this->request->getVar('pincode'),
-            'place' => $this->request->getVar('place'),
-            'state' => $this->request->getVar('state'),
-            'country' => $this->request->getVar('country'),
-            'userid' => $this->request->getVar('userid'),
-        ];
-        // 'userid',$data['userid'] and 'status','pending'
-        $flag=$this->db->table("loanapplication")->select('userid,status')->where(['userid'=>$data['userid'],'status'=>'pending'])->countAllResults();
-        if($flag<1)
-        {
-            
-            $result= $this->db->table("loanapplication")->insert($data);
-            if(!$result)
-        {   
-            $response=[
-                'status'=>'400',
-                'success'=>'false',
-                'error'=>$apimodel->error(),
-                'messages' => 'Error Occured',
-            ];
-            return $this->respond($response);
-        }
-        else{
-            $response=[
-                'status'=>'201',
-                'error'=>$apimodel->error(),
-                'success'=>'true',
-                'messages' => 'Application Submit Successfully',
-            ];
-            return $this->respondCreated($response);
-        }
-        return $this->respond($data);
-    }
-        else
-    {
+        $email=$this->request->getVar('email');
+        $data = $this->db->table("email")->select()->where('receiver',$email)->get()->getResultArray();
+        $totalMail=$this->db->table("email")->select()->where('reveiver',$email)->countAllResults();
         $response=[
-            'status'=>'409',
-            'success'=>'false',
-            'error'=>$apimodel->error(),
-            'messages' => 'Duplicate record.',
+            'data'=>$data,
+            'totalEmail'=>$totalMail,
         ];
+        
         return $this->respond($response);
     }
-}
-    public function Application(){
+    public function allEmailSent(){
         $apimodel= model(Register::class);
         $this->db = \Config\Database::connect();
-        // ->where("status",'pending')
-        $data = $this->db->table("loanapplication")->select()->get()->getResultArray();
-        return $this->respond($data);
-    }
-    public function allApplicationById(){
-        $id=$this->request->getVar('userId');
-        $apimodel= model(Register::class);
-        $this->db = \Config\Database::connect();
-        // ->where("status",'pending')
-        $data = $this->db->table("loanapplication")->select()->where('userid',$id)->get()->getResultArray();
-        return $this->respond($data);
-    }
-
-
-    public function loanAction(){
-        $apimodel= model(Register::class);
-        $this->db = \Config\Database::connect();
-                                        
-        
-        $data = [
-            'id' => $this->request->getVar('id'),
-            'userid' => $this->request->getVar('userid'),
-            'remark' => $this->request->getVar('remark'),
-            'status' => $this->request->getVar('status'),
-        ];
-        // print_r($data['id']);
-        $result= $this->db->table("loanapplication")->where('id',$data['id'])->update($data);
-        if(!$result)
-        {   
-            $response=[
-                'status'=>'400',
-                'success'=>'false',
-                'error'=>$apimodel->error(),
-                'messages' => 'Error Occured',
-            ];
-            return $this->respond($response);
-        }
-        else{
-            $response=[
-                'status'=>'200',
-                'error'=>null,
-                'success'=>'true',
-                'messages' => 'Application Updated Successfully',
-            ];
-            return $this->respond($response);
-        }
-        return $this->respond($data);
-    }
-public function EmiDetails()
-{
-    $apimodel= model(Register::class);
-    $this->db = \Config\Database::connect();
-    $loanid=$this->request->getVar("loanid");
-    $result=$this->db->table("loansummary")->select()->where("loanid",$loanid)->get()->getResultArray();
-        return $this->respond($result);
-}
-public function EmiPaid()
-{
-    $apimodel= model(Register::class);
-    $this->db = \Config\Database::connect();
-    $id=$this->request->getVar('id');
-    
-    $emiPaidPrevious=$this->db->table("loansummary")->select('emiPaid')->where('id',$id)->get()->getRowArray();
-    $emi=[
-        'emiPaid'=>$emiPaidPrevious['emiPaid']+1,
-    ];
-    $respond=[
-        'result'=>$this->db->table("loansummary")->where('id',$id)->update($emi),
-        'message'=>$apimodel->error()     
-    ];
-    return $this->respond($id);
-}
-public function EmiChart()
-{
-    $apimodel= model(Register::class);
-    $this->db = \Config\Database::connect();
-
-            $data=[
-            "userid"=>$this->request->getVar("userid"),
-            "loanid"=>$this->request->getVar("loanid"),
-            "loanAmt"=>$this->request->getVar("loanAmt"),
-            "interestRate"=>$this->request->getVar("interestRate"),
-            "totalAmt"=>$this->request->getVar("totalAmt"),
-            "totalIntAmt"=>$this->request->getVar("totalIntAmt"),
-            "startDate"=>$this->request->getVar("startDate"),
-            "emiAmt"=>$this->request->getVar("emiAmt"),
-            "duration"=>$this->request->getVar("duration"),
-            "emiPaid"=>0,
-        ];
-        $result= $this->db->table("loansummary")->insert($data);
-        if(!$result)
-        {   
-            $response=[
-                'status'=>'400',
-                'success'=>'false',
-                'error'=>$apimodel->error(),
-                'messages' => 'Table Not Created',
-            ];
-            return $this->respond($response);
-        }
-        else{
-        $tableres=$this->db->table("loansummary")->select('id,loanid')->where("loanid",$data['loanid'])->get()->getRowArray();
-        $data=[
-            'tableid'=>$tableres['id'],
-        ];
-        $result= $this->db->table("loanapplication")->where('id',$tableres['loanid'])->update($data);
+        $email=$this->request->getVar('email');
+        $data = $this->db->table("email")->select()->where('sender',$email)->get()->getResultArray();
+        $totalMail=$this->db->table("email")->select()->where('sender',$email)->countAllResults();
         $response=[
-            'status'=>'201',
-            'error'=>$apimodel->error(),
-            'success'=>'true',
-            'messages' => $result,
-            'tableid'=>$tableres['id'],
-            'loanid'=>$tableres['loanid']
+            'data'=>$data,
+            'totalEmail'=>$totalMail,
         ];
-        return $this->respondCreated($response);
+        
+        return $this->respond($response);
     }
-    return $this->respond($data);
-}
-     
+    public function readStatusApi(){
+        $apimodel= model(Register::class);
+        $this->db = \Config\Database::connect();
+        $id=$this->request->getVar('id');
+        $data = $this->db->table("email")->where('id',$id)->update(['readStatus'=>'read']);
+        // $totalMail=$this->db->table("email")->select()->where('sender',$email)->countAllResults();
+       
+        
+        return $this->respond($data);
+    }
+    public function allEmailRegister(){
+        $apimodel= model(Register::class);
+        $this->db = \Config\Database::connect();
+        $data = $this->db->table("register")->select('email')->get()->getResultArray();
+       
+        
+        return $this->respond($data);
+    }
+    
+
     }
     

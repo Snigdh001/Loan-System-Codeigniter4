@@ -35,7 +35,7 @@ class Database extends Config
         'hostname' => 'localhost',
         'username' => 'snigdh',
         'password' => 'password',
-        'database' => 'Loan',
+        'database' => 'Loan', //use 'email' for email system project
         'DBDriver' => 'MySQLi',
         'DBPrefix' => '',
         'pConnect' => false,
